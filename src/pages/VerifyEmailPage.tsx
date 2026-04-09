@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { authApi } from '../api'
 import { useAuthStore } from '../store/authStore'
@@ -9,8 +9,13 @@ export default function VerifyEmailPage() {
   const setAuth = useAuthStore((s) => s.setAuth)
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading')
   const [errorMessage, setErrorMessage] = useState('')
+  // Guard against React StrictMode double-firing the effect in development
+  const hasRun = useRef(false)
 
   useEffect(() => {
+    if (hasRun.current) return
+    hasRun.current = true
+
     const token = searchParams.get('token')
     if (!token) {
       setErrorMessage('קישור לא תקין.')
@@ -27,8 +32,8 @@ export default function VerifyEmailPage() {
           isEmailVerified: res.isEmailVerified,
         })
         setStatus('success')
-        // Auto-redirect after 2s
-        setTimeout(() => navigate('/home'), 2000)
+        // Auto-redirect after 1.5s so user sees the success message
+        setTimeout(() => navigate('/home'), 1500)
       })
       .catch((err) => {
         setErrorMessage(err.response?.data?.error ?? 'אימות נכשל.')
