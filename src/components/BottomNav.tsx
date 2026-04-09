@@ -6,9 +6,9 @@ export default function BottomNav({ active }: { active: Tab }) {
   const navigate = useNavigate()
 
   return (
-    <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] bg-white border-t border-gray-100 flex z-10">
+    <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] bg-white border-t border-gray-100 flex z-10 pb-safe">
       <NavItem
-        label="Home"
+        label="בית"
         active={active === 'home'}
         onClick={() => navigate('/home')}
         icon={
@@ -19,7 +19,7 @@ export default function BottomNav({ active }: { active: Tab }) {
         }
       />
       <NavItem
-        label="Statistics"
+        label="סטטיסטיקה"
         active={active === 'statistics'}
         onClick={() => navigate('/statistics')}
         icon={
@@ -39,7 +39,12 @@ function NavItem({ label, active, onClick, icon }: { label: string; active: bool
       onClick={onClick}
       className="flex-1 flex flex-col items-center gap-1 py-3 transition"
     >
-      {icon}
+      <div className="relative flex flex-col items-center">
+        {active && (
+          <span className="absolute -top-2 w-1 h-1 rounded-full bg-[#7C3AED]" />
+        )}
+        {icon}
+      </div>
       <span className={`text-xs font-medium ${active ? 'text-[#7C3AED]' : 'text-gray-400'}`}>{label}</span>
     </button>
   )

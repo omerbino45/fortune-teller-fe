@@ -6,12 +6,15 @@ import type { Worry } from '../types'
 import BottomNav from '../components/BottomNav'
 import WorryCard from '../components/WorryCard'
 import UserMenu from '../components/UserMenu'
+import DateFilterBubble, { type DateRange } from '../components/DateFilterBubble'
 
 export default function HomePage() {
   const navigate = useNavigate()
   const user = useAuthStore((s) => s.user)
   const [worries, setWorries] = useState<Worry[]>([])
   const [search, setSearch] = useState('')
+  const [filter, setFilter] = useState<'All' | 'Active' | 'Resolved'>('All')
+  const [dateRange, setDateRange] = useState<DateRange>({ from: null, to: null })
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -27,6 +30,13 @@ export default function HomePage() {
   })
 
   const filtered = sorted.filter((w) => {
+    if (filter !== 'All' && w.status !== filter) return false
+    if (dateRange.from && new Date(w.createdAt) < dateRange.from) return false
+    if (dateRange.to) {
+      const endOfDay = new Date(dateRange.to)
+      endOfDay.setHours(23, 59, 59, 999)
+      if (new Date(w.createdAt) > endOfDay) return false
+    }
     const q = search.toLowerCase()
     return !q || w.title.toLowerCase().includes(q) || (w.description ?? '').toLowerCase().includes(q)
   })
@@ -35,14 +45,15 @@ export default function HomePage() {
     <div className="app-shell flex flex-col min-h-dvh">
       {/* Purple header */}
       <div className="bg-[#7C3AED] pt-14 pb-8 px-5 rounded-b-[32px]">
-        <div className="flex items-center justify-between mb-5">
-          <div className="w-8 h-8" /> {/* spacer */}
+        <div className="flex items-center justify-between">
+          <h1 className="text-white text-2xl font-bold">שלום, {user?.name ?? '…'} 👋</h1>
           <UserMenu />
         </div>
-        <h1 className="text-white text-2xl font-bold">
-          Hello, {user?.name ?? '…'} 👋
-        </h1>
-        <p className="text-purple-200 text-sm mt-0.5">How are you feeling today?</p>
+        <p className="text-purple-200 text-sm mt-0.5">
+          {worries.length === 0
+            ? 'איך אתה מרגיש היום?'
+            : `${worries.filter(w => w.status === 'Active').length} פעילות · ${worries.filter(w => w.status === 'Resolved').length} נפתרו`}
+        </p>
 
         {/* Search */}
         <div className="mt-5 relative">
@@ -54,17 +65,28 @@ export default function HomePage() {
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search worries…"
+            placeholder="חיפוש דאגות…"
             className="w-full bg-white rounded-2xl pl-10 pr-4 py-3 text-sm text-gray-700 outline-none"
           />
         </div>
       </div>
 
       {/* Filter bubbles */}
-      <div className="px-5 pt-5 flex gap-2">
-        <button className="bg-[#7C3AED] text-white text-xs font-semibold px-4 py-1.5 rounded-full">
-          All
-        </button>
+      <div className="px-5 pt-5 flex gap-2 flex-wrap">
+        {(['All', 'Active', 'Resolved'] as const).map((f) => (
+          <button
+            key={f}
+            onClick={() => setFilter(f)}
+            className={`text-xs font-semibold px-4 py-1.5 rounded-full transition ${
+              filter === f
+                ? 'bg-[#7C3AED] text-white'
+                : 'bg-white text-gray-500 border border-gray-200'
+            }`}
+          >
+            {f === 'All' ? 'הכל' : f === 'Active' ? 'פעיל' : 'נפתר'}
+          </button>
+        ))}
+        <DateFilterBubble value={dateRange} onChange={setDateRange} />
       </div>
 
       {/* List */}
@@ -74,8 +96,8 @@ export default function HomePage() {
         ) : filtered.length === 0 ? (
           <div className="text-center pt-16">
             <div className="text-5xl mb-4">🔮</div>
-            <p className="text-gray-500 font-medium">No worries yet</p>
-            <p className="text-gray-400 text-sm mt-1">Tap + to record your first one</p>
+            <p className="text-gray-500 font-medium">אין דאגות עדיין</p>
+            <p className="text-gray-400 text-sm mt-1">לחץ + כדי להוסיף את הראשונה</p>
           </div>
         ) : (
           filtered.map((w) => (
@@ -87,7 +109,7 @@ export default function HomePage() {
       {/* FAB */}
       <button
         onClick={() => navigate('/worries/new')}
-        className="fixed bottom-24 right-5 w-14 h-14 bg-[#7C3AED] hover:bg-[#6D28D9] text-white rounded-full shadow-lg flex items-center justify-center text-2xl transition z-10"
+        className="fixed bottom-24 left-5 w-14 h-14 bg-[#7C3AED] hover:bg-[#6D28D9] text-white rounded-full shadow-lg ring-4 ring-[#7C3AED]/25 flex items-center justify-center text-2xl transition z-10"
       >
         +
       </button>
