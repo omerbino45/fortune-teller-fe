@@ -40,7 +40,7 @@ export default function NewWorryPage() {
       })
       navigate('/home')
     } catch {
-      setError('Failed to save. Please try again.')
+      setError('שמירה נכשלה. אנא נסה שוב.')
     }
   }
 
@@ -50,11 +50,11 @@ export default function NewWorryPage() {
       <div className="bg-[#7C3AED] pt-14 pb-6 px-5 rounded-b-[32px]">
         <div className="flex items-center gap-3">
           <button onClick={() => navigate(-1)} className="text-white">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{transform:'scaleX(-1)'}}>
               <path d="M19 12H5M12 19l-7-7 7-7"/>
             </svg>
           </button>
-          <h1 className="text-white text-xl font-bold">New Worry</h1>
+          <h1 className="text-white text-xl font-bold">דאגה חדשה</h1>
         </div>
       </div>
 
@@ -68,57 +68,57 @@ export default function NewWorryPage() {
         {/* Title */}
         <div>
           <div className="flex justify-between mb-1.5">
-            <label className="text-sm font-semibold text-gray-700">Title *</label>
+            <label className="text-sm font-semibold text-gray-700">כותרת *</label>
             <span className="text-xs text-gray-400">{titleValue.length}/50</span>
           </div>
           <input
             {...register('title')}
             maxLength={50}
             className="w-full bg-white border border-gray-200 rounded-2xl px-4 py-3.5 text-sm text-gray-800 outline-none focus:border-[#7C3AED] focus:ring-2 focus:ring-purple-100 transition"
-            placeholder="Give this worry a short name…"
+            placeholder="תן לדאגה שם קצר…"
           />
           {errors.title && <p className="text-red-500 text-xs mt-1">{errors.title.message}</p>}
         </div>
 
-        {/* Prophecy */}
-        <div>
-          <label className="text-sm font-semibold text-gray-700 mb-1.5 block">What do you think will happen? *</label>
-          <textarea
-            {...register('prophecy')}
-            rows={3}
-            className="w-full bg-white border border-gray-200 rounded-2xl px-4 py-3.5 text-sm text-gray-800 outline-none focus:border-[#7C3AED] focus:ring-2 focus:ring-purple-100 transition resize-none"
-            placeholder="Describe your fear in detail…"
-          />
-          {errors.prophecy && <p className="text-red-500 text-xs mt-1">{errors.prophecy.message}</p>}
-        </div>
-
-        {/* Pre-anxiety slider */}
-        <SliderField
-          label="How anxious do you feel right now?"
-          value={preAnxiety}
-          onChange={setPreAnxiety}
-        />
-
-        {/* Assurance slider */}
-        <SliderField
-          label="How confident are you this will happen?"
-          value={assurance}
-          onChange={setAssurance}
-        />
-
         {/* Description */}
         <div>
-          <label className="text-sm font-semibold text-gray-700 mb-1.5 block">Additional context <span className="text-gray-400 font-normal">(optional)</span></label>
+          <label className="text-sm font-semibold text-gray-700 mb-1.5 block">תיאור <span className="text-gray-400 font-normal">(אופציונלי)</span></label>
           <textarea
             {...register('description')}
             rows={2}
             className="w-full bg-white border border-gray-200 rounded-2xl px-4 py-3.5 text-sm text-gray-800 outline-none focus:border-[#7C3AED] focus:ring-2 focus:ring-purple-100 transition resize-none"
-            placeholder="Any extra details…"
+            placeholder="פרטים נוספים…"
           />
         </div>
 
         {/* Factors */}
         <FactorsList factors={factors} onChange={setFactors} />
+
+        {/* Pre-anxiety slider */}
+        <SliderField
+          label="כמה אתה חרד עכשיו?"
+          value={preAnxiety}
+          onChange={setPreAnxiety}
+        />
+
+        {/* Prophecy */}
+        <div>
+          <label className="text-sm font-semibold text-gray-700 mb-1.5 block">מה הנבואה? *</label>
+          <textarea
+            {...register('prophecy')}
+            rows={3}
+            className="w-full bg-white border border-gray-200 rounded-2xl px-4 py-3.5 text-sm text-gray-800 outline-none focus:border-[#7C3AED] focus:ring-2 focus:ring-purple-100 transition resize-none"
+            placeholder="מה אתה חושב שיקרה…"
+          />
+          {errors.prophecy && <p className="text-red-500 text-xs mt-1">{errors.prophecy.message}</p>}
+        </div>
+
+        {/* Assurance slider */}
+        <SliderField
+          label="כמה אתה בטוח שזה יקרה?"
+          value={assurance}
+          onChange={setAssurance}
+        />
       </form>
 
       {/* Sticky save button */}
@@ -130,7 +130,7 @@ export default function NewWorryPage() {
           onClick={handleSubmit(onSubmit)}
           className="w-full bg-[#7C3AED] hover:bg-[#6D28D9] disabled:opacity-60 text-white font-semibold rounded-2xl py-4 text-sm transition"
         >
-          {isSubmitting ? 'Saving…' : 'Save Worry'}
+          {isSubmitting ? 'שומר…' : 'שמור דאגה'}
         </button>
       </div>
     </div>

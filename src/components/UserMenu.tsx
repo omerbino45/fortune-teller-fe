@@ -26,16 +26,16 @@ export default function UserMenu() {
       {open && (
         <>
           <div className="fixed inset-0 z-10" onClick={() => setOpen(false)} />
-          <div className="absolute right-0 top-12 z-20 bg-white rounded-2xl shadow-xl py-2 w-48">
+          <div className="absolute left-0 top-12 z-20 bg-white rounded-2xl shadow-xl py-2 w-48">
             <div className="px-4 py-2 border-b border-gray-100">
               <p className="text-sm font-semibold text-gray-800">{user?.name}</p>
               <p className="text-xs text-gray-400">@{user?.username}</p>
             </div>
             <button
               onClick={handleLogout}
-              className="w-full text-left px-4 py-3 text-sm text-red-500 hover:bg-red-50 transition"
+              className="w-full text-right px-4 py-3 text-sm text-red-500 hover:bg-red-50 transition"
             >
-              Log out
+              התנתקות
             </button>
           </div>
         </>
