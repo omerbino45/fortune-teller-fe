@@ -1,5 +1,5 @@
 import axios from 'axios'
-import type { AuthResponse, Worry } from './types'
+import type { AuthResponse, RegisterResponse, Worry } from './types'
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL ?? 'http://localhost:5212/api',
@@ -27,11 +27,23 @@ api.interceptors.response.use(
 
 // Auth
 export const authApi = {
-  register: (data: { username: string; password: string; name: string }) =>
-    api.post<AuthResponse>('/auth/register', data).then((r) => r.data),
+  register: (data: { username: string; password: string; name: string; email: string }) =>
+    api.post<RegisterResponse>('/auth/register', data).then((r) => r.data),
 
   login: (data: { username: string; password: string }) =>
     api.post<AuthResponse>('/auth/login', data).then((r) => r.data),
+
+  verifyEmail: (token: string) =>
+    api.get<AuthResponse>(`/auth/verify-email?token=${encodeURIComponent(token)}`).then((r) => r.data),
+
+  forgotPassword: (email: string) =>
+    api.post<{ message: string }>('/auth/forgot-password', { email }).then((r) => r.data),
+
+  resetPassword: (token: string, newPassword: string) =>
+    api.post<AuthResponse>('/auth/reset-password', { token, newPassword }).then((r) => r.data),
+
+  resendVerification: () =>
+    api.post<{ message: string }>('/auth/resend-verification').then((r) => r.data),
 }
 
 // Worries

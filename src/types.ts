@@ -20,4 +20,10 @@ export interface AuthResponse {
   userId: string
   username: string
   name: string
+  isEmailVerified: boolean
+}
+
+export interface RegisterResponse {
+  message: string
+  email: string
 }
