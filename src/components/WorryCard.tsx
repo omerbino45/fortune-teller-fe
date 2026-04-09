@@ -62,9 +62,6 @@ export default function WorryCard({ worry, onClick }: { worry: Worry; onClick: (
       onClick={onClick}
       className="w-full bg-white rounded-2xl overflow-hidden flex shadow-sm active:scale-[0.98] transition-transform"
     >
-      {/* Right accent bar (RTL leading edge) */}
-      <div className={`w-1 shrink-0 ${isResolved ? 'bg-[#6EE7B7]' : 'bg-[#FDBA74]'}`} />
-
       {/* Text content */}
       <div className="flex-1 min-w-0 px-4 py-4">
         <div className="flex items-center gap-2">

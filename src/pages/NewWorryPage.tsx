@@ -47,7 +47,7 @@ export default function NewWorryPage() {
   return (
     <div className="app-shell flex flex-col min-h-dvh">
       {/* Header */}
-      <div className="bg-[#7C3AED] pt-14 pb-6 px-5 rounded-b-[32px]">
+      <div className="bg-[#7C3AED] pt-6 pb-6 px-5 rounded-b-[32px]">
         <div className="flex items-center gap-3">
           <button onClick={() => navigate(-1)} className="text-white">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{transform:'scaleX(-1)'}}>
@@ -74,7 +74,7 @@ export default function NewWorryPage() {
           <input
             {...register('title')}
             maxLength={50}
-            className="w-full bg-white border border-gray-200 rounded-2xl px-4 py-3.5 text-sm text-gray-800 outline-none focus:border-[#7C3AED] focus:ring-2 focus:ring-purple-100 transition"
+            className="w-full bg-white border border-gray-200 rounded-2xl px-4 py-3.5 text-base text-gray-800 outline-none focus:border-[#7C3AED] focus:ring-2 focus:ring-purple-100 transition"
             placeholder="תן לדאגה שם קצר…"
           />
           {errors.title && <p className="text-red-500 text-xs mt-1">{errors.title.message}</p>}
@@ -86,7 +86,7 @@ export default function NewWorryPage() {
           <textarea
             {...register('description')}
             rows={2}
-            className="w-full bg-white border border-gray-200 rounded-2xl px-4 py-3.5 text-sm text-gray-800 outline-none focus:border-[#7C3AED] focus:ring-2 focus:ring-purple-100 transition resize-none"
+            className="w-full bg-white border border-gray-200 rounded-2xl px-4 py-3.5 text-base text-gray-800 outline-none focus:border-[#7C3AED] focus:ring-2 focus:ring-purple-100 transition resize-none"
             placeholder="פרטים נוספים…"
           />
         </div>
@@ -107,7 +107,7 @@ export default function NewWorryPage() {
           <textarea
             {...register('prophecy')}
             rows={3}
-            className="w-full bg-white border border-gray-200 rounded-2xl px-4 py-3.5 text-sm text-gray-800 outline-none focus:border-[#7C3AED] focus:ring-2 focus:ring-purple-100 transition resize-none"
+            className="w-full bg-white border border-gray-200 rounded-2xl px-4 py-3.5 text-base text-gray-800 outline-none focus:border-[#7C3AED] focus:ring-2 focus:ring-purple-100 transition resize-none"
             placeholder="מה אתה חושב שיקרה…"
           />
           {errors.prophecy && <p className="text-red-500 text-xs mt-1">{errors.prophecy.message}</p>}
