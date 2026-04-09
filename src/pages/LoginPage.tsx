@@ -20,7 +20,7 @@ export default function LoginPage() {
   const [resendLoading, setResendLoading] = useState(false)
   const [resendSuccess, setResendSuccess] = useState(false)
 
-  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormData>({
+  const { register, handleSubmit, getValues, formState: { errors, isSubmitting } } = useForm<FormData>({
     resolver: zodResolver(schema),
   })
 
@@ -50,14 +50,11 @@ export default function LoginPage() {
   const handleResendVerification = async () => {
     try {
       setResendLoading(true)
-      // We need a token to call resend-verification (it's an authorized endpoint)
-      // Since the user isn't logged in yet, we handle this differently:
-      // Show a message directing them to re-register or contact support.
-      // Actually we can just try to do a forgot-password approach.
-      // For simplicity, just show the user they need to check their email.
+      await authApi.resendVerification(getValues('username'))
       setResendSuccess(true)
-    } catch {
-      // ignore
+    } catch (err: any) {
+      // Rate-limit hit — show the BE message
+      setError(err.response?.data?.error ?? 'שליחה נכשלה. נסה שוב.')
     } finally {
       setResendLoading(false)
     }

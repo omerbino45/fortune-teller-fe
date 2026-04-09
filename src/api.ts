@@ -42,8 +42,8 @@ export const authApi = {
   resetPassword: (token: string, newPassword: string) =>
     api.post<AuthResponse>('/auth/reset-password', { token, newPassword }).then((r) => r.data),
 
-  resendVerification: () =>
-    api.post<{ message: string }>('/auth/resend-verification').then((r) => r.data),
+  resendVerification: (username: string) =>
+    api.post<{ message: string }>('/auth/resend-verification', { username }).then((r) => r.data),
 }
 
 // Worries
