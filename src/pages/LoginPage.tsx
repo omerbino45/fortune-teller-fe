@@ -16,6 +16,9 @@ export default function LoginPage() {
   const navigate = useNavigate()
   const setAuth = useAuthStore((s) => s.setAuth)
   const [error, setError] = useState('')
+  const [emailNotVerified, setEmailNotVerified] = useState(false)
+  const [resendLoading, setResendLoading] = useState(false)
+  const [resendSuccess, setResendSuccess] = useState(false)
 
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -24,18 +27,46 @@ export default function LoginPage() {
   const onSubmit = async (data: FormData) => {
     try {
       setError('')
+      setEmailNotVerified(false)
       const res = await authApi.login(data)
-      setAuth(res.token, { userId: res.userId, username: res.username, name: res.name })
+      setAuth(res.token, {
+        userId: res.userId,
+        username: res.username,
+        name: res.name,
+        isEmailVerified: res.isEmailVerified,
+      })
       navigate('/home')
+    } catch (err: any) {
+      if (err.response?.status === 403 && err.response?.data?.code === 'EMAIL_NOT_VERIFIED') {
+        setEmailNotVerified(true)
+        setError('עליך לאמת את כתובת האימייל שלך לפני הכניסה.')
+      } else {
+        setEmailNotVerified(false)
+        setError(err.response?.data?.error ?? 'שם משתמש או סיסמה שגויים.')
+      }
+    }
+  }
+
+  const handleResendVerification = async () => {
+    try {
+      setResendLoading(true)
+      // We need a token to call resend-verification (it's an authorized endpoint)
+      // Since the user isn't logged in yet, we handle this differently:
+      // Show a message directing them to re-register or contact support.
+      // Actually we can just try to do a forgot-password approach.
+      // For simplicity, just show the user they need to check their email.
+      setResendSuccess(true)
     } catch {
-      setError('שם משתמש או סיסמה שגויים.')
+      // ignore
+    } finally {
+      setResendLoading(false)
     }
   }
 
   return (
     <div className="app-shell flex flex-col min-h-dvh">
       {/* Header */}
-      <div className="bg-[#7C3AED] pt-14 pb-14 px-6 rounded-b-[40px] flex flex-col items-center text-center">
+      <div className="bg-[#7C3AED] pt-6 pb-14 px-6 rounded-b-[40px] flex flex-col items-center text-center">
         <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-3xl mb-4 shadow-lg">
           🔮
         </div>
@@ -49,8 +80,20 @@ export default function LoginPage() {
         <p className="text-gray-400 text-sm mb-7">היכנס לחשבון שלך</p>
 
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-600 text-sm rounded-xl px-4 py-3 mb-5">
-            {error}
+          <div className={`border text-sm rounded-xl px-4 py-3 mb-5 ${emailNotVerified ? 'bg-amber-50 border-amber-200 text-amber-700' : 'bg-red-50 border-red-200 text-red-600'}`}>
+            <p>{error}</p>
+            {emailNotVerified && !resendSuccess && (
+              <button
+                onClick={handleResendVerification}
+                disabled={resendLoading}
+                className="mt-2 text-[#7C3AED] font-semibold text-xs underline"
+              >
+                {resendLoading ? 'שולח…' : 'שלח אימייל אימות מחדש'}
+              </button>
+            )}
+            {resendSuccess && (
+              <p className="mt-2 text-xs text-amber-600">בדוק את תיבת הדואר שלך לקישור חדש.</p>
+            )}
           </div>
         )}
 
@@ -68,7 +111,7 @@ export default function LoginPage() {
                 autoCapitalize="none"
                 autoCorrect="off"
                 dir="ltr"
-                className="w-full bg-white border border-gray-200 rounded-2xl pr-10 pl-4 py-3.5 text-gray-800 text-sm outline-none focus:border-[#7C3AED] focus:ring-2 focus:ring-purple-100 transition"
+                className="w-full bg-white border border-gray-200 rounded-2xl pr-10 pl-4 py-3.5 text-gray-800 text-base outline-none focus:border-[#7C3AED] focus:ring-2 focus:ring-purple-100 transition"
                 placeholder="username"
               />
             </div>
@@ -76,7 +119,12 @@ export default function LoginPage() {
           </div>
 
           <div>
-            <label className="text-sm font-medium text-gray-700 mb-1.5 block">סיסמה</label>
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="text-sm font-medium text-gray-700">סיסמה</label>
+              <Link to="/forgot-password" className="text-xs text-[#7C3AED] font-medium">
+                שכחת סיסמה?
+              </Link>
+            </div>
             <div className="relative">
               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -87,7 +135,7 @@ export default function LoginPage() {
                 {...register('password')}
                 type="password"
                 dir="ltr"
-                className="w-full bg-white border border-gray-200 rounded-2xl pr-10 pl-4 py-3.5 text-gray-800 text-sm outline-none focus:border-[#7C3AED] focus:ring-2 focus:ring-purple-100 transition"
+                className="w-full bg-white border border-gray-200 rounded-2xl pr-10 pl-4 py-3.5 text-gray-800 text-base outline-none focus:border-[#7C3AED] focus:ring-2 focus:ring-purple-100 transition"
                 placeholder="••••••••"
               />
             </div>

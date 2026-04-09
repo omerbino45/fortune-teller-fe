@@ -4,6 +4,7 @@ interface AuthUser {
   userId: string
   username: string
   name: string
+  isEmailVerified: boolean
 }
 
 interface AuthState {
