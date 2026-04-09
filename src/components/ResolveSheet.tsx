@@ -61,7 +61,7 @@ export default function ResolveSheet({ worryId, onResolved, onDismiss }: Props) 
               value={outcome}
               onChange={(e) => setOutcome(e.target.value)}
               rows={3}
-              className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3.5 text-sm text-gray-800 outline-none focus:border-[#7C3AED] focus:ring-2 focus:ring-purple-100 transition resize-none"
+              className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3.5 text-base text-gray-800 outline-none focus:border-[#7C3AED] focus:ring-2 focus:ring-purple-100 transition resize-none"
               placeholder="מה שקרה באמת…"
             />
           </div>

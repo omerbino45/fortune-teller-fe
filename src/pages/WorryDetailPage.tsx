@@ -93,14 +93,11 @@ export default function WorryDetailPage() {
   )
 
   const isResolved = worry.status === 'Resolved'
-  const reliefDelta = isResolved && worry.postAnxietyLevel !== null
-    ? worry.preAnxietyLevel - worry.postAnxietyLevel!
-    : null
 
   return (
     <div className="app-shell flex flex-col min-h-dvh">
       {/* Header — always purple */}
-      <div className="bg-[#7C3AED] pt-14 pb-6 px-5 rounded-b-[32px]">
+      <div className="bg-[#7C3AED] pt-6 pb-6 px-5 rounded-b-[32px]">
         {/* Row 1: back ← ——————————————————— → Edit / Cancel */}
         <div className="flex items-center justify-between">
           <button onClick={() => navigate(-1)} className="text-white">
@@ -164,7 +161,7 @@ export default function WorryDetailPage() {
               value={editDescription}
               onChange={(e) => setEditDescription(e.target.value)}
               rows={3}
-              className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-sm text-gray-800 outline-none focus:border-[#7C3AED] focus:ring-1 focus:ring-purple-100 transition resize-none"
+              className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-base text-gray-800 outline-none focus:border-[#7C3AED] focus:ring-1 focus:ring-purple-100 transition resize-none"
               placeholder="הקשר נוסף…"
             />
           </div>
@@ -227,7 +224,7 @@ export default function WorryDetailPage() {
                     value={editActualOutcome}
                     onChange={(e) => setEditActualOutcome(e.target.value)}
                     rows={3}
-                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-sm text-gray-800 outline-none focus:border-[#7C3AED] focus:ring-1 focus:ring-purple-100 transition resize-none"
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-base text-gray-800 outline-none focus:border-[#7C3AED] focus:ring-1 focus:ring-purple-100 transition resize-none"
                     placeholder="מה קרה בפועל…"
                   />
                 </div>
@@ -248,22 +245,6 @@ export default function WorryDetailPage() {
               </>
             )}
 
-            {!editing && reliefDelta !== null && (
-              <div className={`relative rounded-2xl px-5 py-5 overflow-hidden ${reliefDelta >= 0 ? 'bg-emerald-50' : 'bg-orange-50'}`}>
-                {/* Decorative background emoji */}
-                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-7xl opacity-10 select-none">
-                  {reliefDelta >= 0 ? '😌' : '😰'}
-                </span>
-                <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-1">הפרש הקלה</p>
-                <p className="text-4xl font-black" style={{ color: reliefDelta >= 0 ? '#10B981' : '#F97316' }}>
-                  {reliefDelta >= 0 ? `−${reliefDelta}` : `+${Math.abs(reliefDelta)}`}
-                  <span className="text-lg font-semibold ml-1">pts</span>
-                </p>
-                <p className="text-xs mt-1" style={{ color: reliefDelta >= 0 ? '#10B981' : '#F97316' }}>
-                  {reliefDelta >= 0 ? 'החרדה שלך הייתה נמוכה ממה שחששת' : 'הדאגה הזו הייתה קשה יותר מהצפוי'}
-                </p>
-              </div>
-            )}
           </>
         )}
       </div>

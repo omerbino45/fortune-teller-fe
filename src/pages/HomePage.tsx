@@ -44,7 +44,7 @@ export default function HomePage() {
   return (
     <div className="app-shell flex flex-col min-h-dvh">
       {/* Purple header */}
-      <div className="bg-[#7C3AED] pt-14 pb-8 px-5 rounded-b-[32px]">
+      <div className="bg-[#7C3AED] pt-6 pb-8 px-5 rounded-b-[32px]">
         <div className="flex items-center justify-between">
           <h1 className="text-white text-2xl font-bold">שלום, {user?.name ?? '…'} 👋</h1>
           <UserMenu />
