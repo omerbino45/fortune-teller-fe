@@ -20,8 +20,8 @@ function heatColor(v: number): string {
 
 function statusGradient(isResolved: boolean): string {
   return isResolved
-    ? 'linear-gradient(180deg, #A8E6A3, #5DB559)'
-    : 'linear-gradient(180deg, #D8B4FE, #A78BFA)'
+    ? 'linear-gradient(180deg, #DDD6FE, #9B8EC4)'
+    : 'linear-gradient(180deg, #FDE68A, #F59E0B)'
 }
 
 function CircleMeter({ value }: { value: number }) {
@@ -73,7 +73,7 @@ export default function WorryCard({ worry, onClick }: {
   const displayValue = isResolved && worry.postAnxietyLevel != null
     ? worry.postAnxietyLevel
     : worry.preAnxietyLevel
-  const glowColor = isResolved ? '#5DB559' : '#A78BFA'
+  const glowColor = isResolved ? '#9B8EC4' : '#F59E0B'
 
   return (
     <button

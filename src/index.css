@@ -35,10 +35,10 @@
   --search-bg: rgba(124, 58, 237, 0.08);
   --filter-inactive-bg: rgba(124, 58, 237, 0.08);
   --filter-inactive-color: #7C3AED;
-  --chip-active-bg: rgba(167, 139, 250, 0.15);
-  --chip-active-color: #6D28D9;
-  --chip-resolved-bg: rgba(93, 181, 89, 0.15);
-  --chip-resolved-color: #2E7D2B;
+  --chip-active-bg: rgba(245, 158, 11, 0.15);
+  --chip-active-color: #92400E;
+  --chip-resolved-bg: rgba(155, 111, 214, 0.12);
+  --chip-resolved-color: #7C5CBF;
   --circle-track: #E5E7EB;
   --card-shadow: 0 2px 16px rgba(124, 58, 237, 0.14), 0 4px 28px rgba(124, 58, 237, 0.07);
   --bg-pattern:
@@ -77,10 +77,10 @@
   --search-bg: rgba(255, 255, 255, 0.10);
   --filter-inactive-bg: rgba(255, 255, 255, 0.07);
   --filter-inactive-color: #9B8EC4;
-  --chip-active-bg: rgba(196, 181, 253, 0.18);
-  --chip-active-color: #C4B5FD;
-  --chip-resolved-bg: rgba(168, 230, 163, 0.18);
-  --chip-resolved-color: #A8E6A3;
+  --chip-active-bg: rgba(253, 230, 138, 0.18);
+  --chip-active-color: #FDE68A;
+  --chip-resolved-bg: rgba(196, 181, 253, 0.15);
+  --chip-resolved-color: #9B8EC4;
   --circle-track: rgba(255, 255, 255, 0.12);
   --card-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
   --bg-pattern:

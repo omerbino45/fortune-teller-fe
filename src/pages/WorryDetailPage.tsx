@@ -122,8 +122,8 @@ export default function WorryDetailPage() {
           <p className="text-white/40 text-xs font-light">{new Date(worry.createdAt).toLocaleDateString()}</p>
           <span className="text-xs font-semibold px-3 py-0.5 rounded-full"
             style={{
-              background: isResolved ? 'rgba(168, 230, 163, 0.25)' : 'rgba(196, 181, 253, 0.3)',
-              color: isResolved ? '#D1FAD0' : '#EDE9FE',
+              background: isResolved ? 'rgba(196, 181, 253, 0.22)' : 'rgba(253, 230, 138, 0.25)',
+              color: isResolved ? '#C4B5FD' : '#FDE68A',
             }}>
             {isResolved ? 'נפתר' : 'פעיל'}
           </span>
