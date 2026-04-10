@@ -112,10 +112,13 @@ export default function WorryDetailPage() {
         <div className="mt-3">
           {editing ? (
             <input value={editTitle} onChange={(e) => setEditTitle(e.target.value)} maxLength={50}
-              className="w-full font-bold text-xl rounded-xl px-3 py-2 outline-none"
+              className="w-full font-bold text-2xl tracking-tight rounded-xl px-3 py-2 outline-none"
               style={{ background: 'rgba(255,255,255,0.18)', border: '1px solid rgba(255,255,255,0.3)', color: 'white' }} />
           ) : (
-            <h1 className="text-white text-xl font-bold line-clamp-2">{worry.title}</h1>
+            <h1 className="text-white text-2xl font-bold tracking-tight line-clamp-2"
+                style={{ textShadow: '0 1px 12px rgba(0,0,0,0.35)' }}>
+              {worry.title}
+            </h1>
           )}
         </div>
 

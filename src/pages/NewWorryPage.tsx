@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -65,33 +66,39 @@ export default function NewWorryPage() {
           </div>
         )}
 
-        <div>
-          <div className="flex justify-between mb-1.5">
-            <label className="text-sm font-semibold text-tx1">כותרת *</label>
-            <span className="text-xs text-tx3 font-light">{titleValue.length}/50</span>
+        <A i={0}>
+          <div>
+            <div className="flex justify-between mb-1.5">
+              <label className="text-sm font-semibold text-tx1">כותרת *</label>
+              <span className="text-xs text-tx3 font-light">{titleValue.length}/50</span>
+            </div>
+            <input {...register('title')} maxLength={50} className="input-dark" placeholder="תן לדאגה שם קצר…" />
+            {errors.title && <p className="text-xs mt-1" style={{ color: 'var(--error-color)' }}>{errors.title.message}</p>}
           </div>
-          <input {...register('title')} maxLength={50} className="input-dark" placeholder="תן לדאגה שם קצר…" />
-          {errors.title && <p className="text-xs mt-1" style={{ color: 'var(--error-color)' }}>{errors.title.message}</p>}
-        </div>
+        </A>
 
-        <div>
-          <label className="text-sm font-semibold text-tx1 mb-1.5 block">
-            תיאור <span className="text-tx3 font-light">(אופציונלי)</span>
-          </label>
-          <textarea {...register('description')} rows={2} className="input-dark resize-none" placeholder="פרטים נוספים…" />
-        </div>
+        <A i={1}>
+          <div>
+            <label className="text-sm font-semibold text-tx1 mb-1.5 block">
+              תיאור <span className="text-tx3 font-light">(אופציונלי)</span>
+            </label>
+            <textarea {...register('description')} rows={2} className="input-dark resize-none" placeholder="פרטים נוספים…" />
+          </div>
+        </A>
 
-        <FactorsList factors={factors} onChange={setFactors} />
+        <A i={2}><FactorsList factors={factors} onChange={setFactors} /></A>
 
-        <SliderField label="כמה אתה חרד עכשיו?" value={preAnxiety} onChange={setPreAnxiety} />
+        <A i={3}><SliderField label="כמה אתה חרד עכשיו?" value={preAnxiety} onChange={setPreAnxiety} /></A>
 
-        <div>
-          <label className="text-sm font-semibold text-tx1 mb-1.5 block">מה הנבואה? *</label>
-          <textarea {...register('prophecy')} rows={3} className="input-dark resize-none" placeholder="מה אתה חושב שיקרה…" />
-          {errors.prophecy && <p className="text-xs mt-1" style={{ color: 'var(--error-color)' }}>{errors.prophecy.message}</p>}
-        </div>
+        <A i={4}>
+          <div>
+            <label className="text-sm font-semibold text-tx1 mb-1.5 block">מה הנבואה? *</label>
+            <textarea {...register('prophecy')} rows={3} className="input-dark resize-none" placeholder="מה אתה חושב שיקרה…" />
+            {errors.prophecy && <p className="text-xs mt-1" style={{ color: 'var(--error-color)' }}>{errors.prophecy.message}</p>}
+          </div>
+        </A>
 
-        <SliderField label="כמה אתה בטוח שזה יקרה?" value={assurance} onChange={setAssurance} />
+        <A i={5}><SliderField label="כמה אתה בטוח שזה יקרה?" value={assurance} onChange={setAssurance} /></A>
       </form>
 
       <div
@@ -109,5 +116,17 @@ export default function NewWorryPage() {
         </button>
       </div>
     </div>
+  )
+}
+
+function A({ i, children }: { i: number; children: React.ReactNode }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, delay: i * 0.06 }}
+    >
+      {children}
+    </motion.div>
   )
 }
