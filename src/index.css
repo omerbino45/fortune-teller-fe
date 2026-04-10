@@ -1,12 +1,22 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #7C3AED;
-  --color-primary-light: #EDE9FE;
-  --color-primary-dark: #5B21B6;
-  --color-surface: #FFFFFF;
-  --color-bg: #F5F3FF;
+  --color-primary: #9B6FD6;
+  --color-primary-dark: #7C3AED;
+  --color-accent: #C084FC;
+  --color-bg: #0A0818;
+  --color-surface: #140C2D;
   --font-sans: 'Inter', system-ui, sans-serif;
+}
+
+:root {
+  --glow: rgba(155, 111, 214, 0.4);
+  --glass-bg: rgba(255, 255, 255, 0.06);
+  --glass-border: rgba(255, 255, 255, 0.10);
+  --surface-bg: rgba(20, 12, 45, 0.85);
+  --text-pri: #EDE9FE;
+  --text-sec: #9B8EC4;
+  --text-mut: #5B4F7A;
 }
 
 * {
@@ -18,7 +28,13 @@
 body {
   margin: 0;
   font-family: 'Inter', system-ui, sans-serif;
-  background-color: #F5F3FF;
+  background-color: #0A0818;
+  background-image:
+    radial-gradient(circle, rgba(155, 111, 214, 0.18) 1px, transparent 1px),
+    radial-gradient(circle, rgba(192, 132, 252, 0.08) 1px, transparent 1px);
+  background-size: 40px 40px, 80px 80px;
+  background-position: 0 0, 20px 20px;
+  background-attachment: fixed;
   min-height: 100dvh;
 }
 
@@ -34,11 +50,73 @@ body {
   max-width: 430px;
   margin: 0 auto;
   min-height: 100dvh;
-  background: #F5F3FF;
+  background: transparent;
   position: relative;
 }
 
-/* ── Custom range slider ───────────────────────────────────── */
+/* ── Glass utilities ─────────────────────────────────────────── */
+@layer utilities {
+  .glass-card {
+    background: rgba(20, 12, 45, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  .glass-panel {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  /* Primary button — static glow, no animation loop */
+  .btn-primary {
+    background: #9B6FD6;
+    box-shadow: 0 0 18px 4px rgba(155, 111, 214, 0.45);
+    color: white;
+    font-weight: 600;
+    border-radius: 1rem;
+    transition: opacity 0.15s, transform 0.1s;
+  }
+  .btn-primary:active { transform: scale(0.97); }
+  .btn-primary:disabled { opacity: 0.55; box-shadow: none; }
+
+  /* Dark input */
+  .input-dark {
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 1rem;
+    padding: 0.875rem 1rem;
+    color: #EDE9FE;
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    width: 100%;
+    font-size: 1rem;
+    font-family: inherit;
+  }
+  .input-dark::placeholder { color: #5B4F7A; }
+  .input-dark:focus {
+    border-color: #9B6FD6;
+    box-shadow: 0 0 0 2px rgba(155, 111, 214, 0.2);
+  }
+
+  /* Fade-in + slide-up — GPU only */
+  @keyframes fade-slide-up {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fade-up {
+    opacity: 0;
+    animation: fade-slide-up 0.3s ease forwards;
+  }
+  .stagger-1 { animation-delay: 0.04s; }
+  .stagger-2 { animation-delay: 0.08s; }
+  .stagger-3 { animation-delay: 0.12s; }
+  .stagger-4 { animation-delay: 0.16s; }
+}
+
+/* ── Custom range slider — dark theme ───────────────────────── */
 .slider {
   -webkit-appearance: none;
   appearance: none;
@@ -47,13 +125,12 @@ body {
   border-radius: 9999px;
   outline: none;
   cursor: pointer;
-  /* track fill driven by --val CSS var set inline */
   background: linear-gradient(
     to right,
-    #7C3AED 0%,
-    #7C3AED var(--val, 50%),
-    #DDD6FE var(--val, 50%),
-    #DDD6FE 100%
+    #9B6FD6 0%,
+    #9B6FD6 var(--val, 50%),
+    rgba(255, 255, 255, 0.15) var(--val, 50%),
+    rgba(255, 255, 255, 0.15) 100%
   );
 }
 
@@ -63,9 +140,9 @@ body {
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: #7C3AED;
-  border: 3px solid #ffffff;
-  box-shadow: 0 1px 6px rgba(124, 58, 237, 0.45);
+  background: #9B6FD6;
+  border: 3px solid #0A0818;
+  box-shadow: 0 0 8px rgba(155, 111, 214, 0.7);
   cursor: pointer;
   transition: transform 0.1s;
 }
@@ -78,9 +155,9 @@ body {
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: #7C3AED;
-  border: 3px solid #ffffff;
-  box-shadow: 0 1px 6px rgba(124, 58, 237, 0.45);
+  background: #9B6FD6;
+  border: 3px solid #0A0818;
+  box-shadow: 0 0 8px rgba(155, 111, 214, 0.7);
   cursor: pointer;
 }
 

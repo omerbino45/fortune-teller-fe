@@ -10,12 +10,10 @@ export default function VerifyEmailPage() {
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading')
   const [errorMessage, setErrorMessage] = useState('')
   const [isExpired, setIsExpired] = useState(false)
-  // Resend state (shown when token is expired)
   const [resendUsername, setResendUsername] = useState('')
   const [resendLoading, setResendLoading] = useState(false)
   const [resendDone, setResendDone] = useState(false)
   const [resendError, setResendError] = useState('')
-  // Guard against React StrictMode double-firing the effect in development
   const hasRun = useRef(false)
 
   useEffect(() => {
@@ -67,43 +65,43 @@ export default function VerifyEmailPage() {
       {status === 'loading' && (
         <>
           <div className="text-5xl mb-4 animate-pulse">🔮</div>
-          <h1 className="text-xl font-bold text-gray-800 mb-2">מאמת את האימייל…</h1>
-          <p className="text-gray-400 text-sm">אנא המתן</p>
+          <h1 className="text-xl font-bold text-[#EDE9FE] mb-2">מאמת את האימייל…</h1>
+          <p className="text-[#5B4F7A] text-sm">אנא המתן</p>
         </>
       )}
 
       {status === 'success' && (
         <>
-          <div className="text-5xl mb-4">✅</div>
-          <h1 className="text-xl font-bold text-gray-800 mb-2">האימייל אומת בהצלחה!</h1>
-          <p className="text-gray-500 text-sm">מועבר לאפליקציה…</p>
+          <div className="text-5xl mb-4 animate-fade-up">✅</div>
+          <h1 className="text-xl font-bold text-[#EDE9FE] mb-2 animate-fade-up stagger-1">האימייל אומת בהצלחה!</h1>
+          <p className="text-[#9B8EC4] text-sm animate-fade-up stagger-2">מועבר לאפליקציה…</p>
         </>
       )}
 
       {status === 'error' && (
         <>
-          <div className="text-5xl mb-4">{isExpired ? '⏰' : '❌'}</div>
-          <h1 className="text-xl font-bold text-gray-800 mb-2">
+          <div className="text-5xl mb-4 animate-fade-up">{isExpired ? '⏰' : '❌'}</div>
+          <h1 className="text-xl font-bold text-[#EDE9FE] mb-2 animate-fade-up stagger-1">
             {isExpired ? 'הקישור פג תוקף' : 'אימות נכשל'}
           </h1>
-          <p className="text-gray-500 text-sm mb-6">{errorMessage}</p>
+          <p className="text-[#9B8EC4] text-sm mb-6 animate-fade-up stagger-2">{errorMessage}</p>
 
           {isExpired && !resendDone && (
-            <div className="w-full max-w-xs text-right mb-4">
-              <p className="text-sm text-gray-600 mb-3">שלח קישור חדש — הזן את שם המשתמש שלך:</p>
+            <div className="w-full max-w-xs text-right mb-4 animate-fade-up stagger-3">
+              <p className="text-sm text-[#9B8EC4] mb-3">שלח קישור חדש — הזן את שם המשתמש שלך:</p>
               <input
                 value={resendUsername}
                 onChange={(e) => setResendUsername(e.target.value)}
                 dir="ltr"
                 autoCapitalize="none"
                 placeholder="username"
-                className="w-full bg-white border border-gray-200 rounded-2xl px-4 py-3 text-gray-800 text-base outline-none focus:border-[#7C3AED] focus:ring-2 focus:ring-purple-100 mb-2"
+                className="input-dark mb-2"
               />
-              {resendError && <p className="text-red-500 text-xs mb-2">{resendError}</p>}
+              {resendError && <p className="text-red-400 text-xs mb-2">{resendError}</p>}
               <button
                 onClick={handleResend}
                 disabled={resendLoading}
-                className="w-full bg-[#7C3AED] disabled:opacity-60 text-white font-semibold rounded-2xl py-3 text-sm"
+                className="btn-primary w-full py-3 text-sm"
               >
                 {resendLoading ? 'שולח…' : 'שלח קישור חדש'}
               </button>
@@ -111,12 +109,12 @@ export default function VerifyEmailPage() {
           )}
 
           {resendDone && (
-            <p className="text-green-600 text-sm mb-4">✅ בדוק את תיבת הדואר שלך לקישור חדש.</p>
+            <p className="text-[#6EE7B7] text-sm mb-4 animate-fade-up">✅ בדוק את תיבת הדואר שלך לקישור חדש.</p>
           )}
 
           <button
             onClick={() => navigate('/login')}
-            className="text-[#7C3AED] font-semibold text-sm underline"
+            className="text-[#9B6FD6] font-semibold text-sm underline animate-fade-up"
           >
             חזרה לכניסה
           </button>

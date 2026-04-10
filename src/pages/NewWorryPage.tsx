@@ -47,9 +47,12 @@ export default function NewWorryPage() {
   return (
     <div className="app-shell flex flex-col min-h-dvh">
       {/* Header */}
-      <div className="bg-[#7C3AED] pt-6 pb-6 px-5 rounded-b-[32px]">
+      <div
+        className="pt-6 pb-6 px-5 rounded-b-[32px]"
+        style={{ background: 'linear-gradient(160deg, #1E0A4F 0%, #0A0818 100%)' }}
+      >
         <div className="flex items-center gap-3">
-          <button onClick={() => navigate(-1)} className="text-white">
+          <button onClick={() => navigate(-1)} className="text-white/70 hover:text-white transition">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{transform:'scaleX(-1)'}}>
               <path d="M19 12H5M12 19l-7-7 7-7"/>
             </svg>
@@ -60,7 +63,8 @@ export default function NewWorryPage() {
 
       <form onSubmit={handleSubmit(onSubmit)} className="flex-1 overflow-y-auto px-5 pt-6 pb-32 space-y-6">
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-600 text-sm rounded-xl px-4 py-3">
+          <div className="text-sm rounded-xl px-4 py-3"
+            style={{ background: 'rgba(248,113,113,0.15)', border: '1px solid rgba(248,113,113,0.3)', color: '#FCA5A5' }}>
             {error}
           </div>
         )}
@@ -68,25 +72,27 @@ export default function NewWorryPage() {
         {/* Title */}
         <div>
           <div className="flex justify-between mb-1.5">
-            <label className="text-sm font-semibold text-gray-700">כותרת *</label>
-            <span className="text-xs text-gray-400">{titleValue.length}/50</span>
+            <label className="text-sm font-semibold text-[#EDE9FE]">כותרת *</label>
+            <span className="text-xs text-[#5B4F7A]">{titleValue.length}/50</span>
           </div>
           <input
             {...register('title')}
             maxLength={50}
-            className="w-full bg-white border border-gray-200 rounded-2xl px-4 py-3.5 text-base text-gray-800 outline-none focus:border-[#7C3AED] focus:ring-2 focus:ring-purple-100 transition"
+            className="input-dark"
             placeholder="תן לדאגה שם קצר…"
           />
-          {errors.title && <p className="text-red-500 text-xs mt-1">{errors.title.message}</p>}
+          {errors.title && <p className="text-red-400 text-xs mt-1">{errors.title.message}</p>}
         </div>
 
         {/* Description */}
         <div>
-          <label className="text-sm font-semibold text-gray-700 mb-1.5 block">תיאור <span className="text-gray-400 font-normal">(אופציונלי)</span></label>
+          <label className="text-sm font-semibold text-[#EDE9FE] mb-1.5 block">
+            תיאור <span className="text-[#5B4F7A] font-normal">(אופציונלי)</span>
+          </label>
           <textarea
             {...register('description')}
             rows={2}
-            className="w-full bg-white border border-gray-200 rounded-2xl px-4 py-3.5 text-base text-gray-800 outline-none focus:border-[#7C3AED] focus:ring-2 focus:ring-purple-100 transition resize-none"
+            className="input-dark resize-none"
             placeholder="פרטים נוספים…"
           />
         </div>
@@ -95,40 +101,35 @@ export default function NewWorryPage() {
         <FactorsList factors={factors} onChange={setFactors} />
 
         {/* Pre-anxiety slider */}
-        <SliderField
-          label="כמה אתה חרד עכשיו?"
-          value={preAnxiety}
-          onChange={setPreAnxiety}
-        />
+        <SliderField label="כמה אתה חרד עכשיו?" value={preAnxiety} onChange={setPreAnxiety} />
 
         {/* Prophecy */}
         <div>
-          <label className="text-sm font-semibold text-gray-700 mb-1.5 block">מה הנבואה? *</label>
+          <label className="text-sm font-semibold text-[#EDE9FE] mb-1.5 block">מה הנבואה? *</label>
           <textarea
             {...register('prophecy')}
             rows={3}
-            className="w-full bg-white border border-gray-200 rounded-2xl px-4 py-3.5 text-base text-gray-800 outline-none focus:border-[#7C3AED] focus:ring-2 focus:ring-purple-100 transition resize-none"
+            className="input-dark resize-none"
             placeholder="מה אתה חושב שיקרה…"
           />
-          {errors.prophecy && <p className="text-red-500 text-xs mt-1">{errors.prophecy.message}</p>}
+          {errors.prophecy && <p className="text-red-400 text-xs mt-1">{errors.prophecy.message}</p>}
         </div>
 
         {/* Assurance slider */}
-        <SliderField
-          label="כמה אתה בטוח שזה יקרה?"
-          value={assurance}
-          onChange={setAssurance}
-        />
+        <SliderField label="כמה אתה בטוח שזה יקרה?" value={assurance} onChange={setAssurance} />
       </form>
 
       {/* Sticky save button */}
-      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] px-5 pb-8 pt-4 bg-gradient-to-t from-[#F5F3FF] via-[#F5F3FF] to-transparent">
+      <div
+        className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] px-5 pb-8 pt-4"
+        style={{ background: 'linear-gradient(to top, #0A0818 60%, transparent)' }}
+      >
         <button
           type="submit"
           form="new-worry-form"
           disabled={isSubmitting}
           onClick={handleSubmit(onSubmit)}
-          className="w-full bg-[#7C3AED] hover:bg-[#6D28D9] disabled:opacity-60 text-white font-semibold rounded-2xl py-4 text-sm transition"
+          className="btn-primary w-full py-4 text-sm"
         >
           {isSubmitting ? 'שומר…' : 'שמור דאגה'}
         </button>

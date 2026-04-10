@@ -10,7 +10,7 @@ interface Props {
   onChange: (range: DateRange) => void
 }
 
-const DAYS    = ['א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ש']   // Sun → Sat
+const DAYS    = ['א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ש']
 const MONTHS  = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר']
 
 const PRESETS = [
@@ -41,7 +41,6 @@ export default function DateFilterBubble({ value, onChange }: Props) {
   const [viewMonth, setViewMonth] = useState(new Date().getMonth())
   const containerRef = useRef<HTMLDivElement>(null)
 
-  // Close on outside click
   useEffect(() => {
     if (!open) return
     const h = (e: MouseEvent) => {
@@ -57,9 +56,8 @@ export default function DateFilterBubble({ value, onChange }: Props) {
     ? `${fmt(value.from)} – ${fmt(value.to)}`
     : value.from ? `מ-${fmt(value.from)}` : 'תאריך'
 
-  // Calendar cells
   const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate()
-  const firstDow    = new Date(viewYear, viewMonth, 1).getDay()  // 0=Sun
+  const firstDow    = new Date(viewYear, viewMonth, 1).getDay()
   const cells: (number | null)[] = [
     ...Array(firstDow).fill(null),
     ...Array.from({ length: daysInMonth }, (_, i) => i + 1),
@@ -107,70 +105,74 @@ export default function DateFilterBubble({ value, onChange }: Props) {
 
   return (
     <div className="relative" ref={containerRef}>
-      {/* Bubble */}
       <button
         onClick={() => { setDraft(value); setStep('from'); setOpen(o => !o) }}
         className={`whitespace-nowrap text-xs font-semibold px-4 py-1.5 rounded-full transition flex items-center gap-1 ${
           isActive
-            ? 'bg-[#7C3AED] text-white'
-            : 'bg-white text-gray-500 border border-gray-200'
+            ? 'text-white'
+            : 'text-[#9B8EC4]'
         }`}
+        style={isActive
+          ? { background: '#9B6FD6', boxShadow: '0 0 12px rgba(155,111,214,0.4)' }
+          : { background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)' }
+        }
       >
         {label}
       </button>
 
-      {/* Popover — ltr so calendar renders correctly */}
       {open && (
         <div
           dir="ltr"
-          className="absolute top-10 left-0 z-50 bg-white rounded-2xl shadow-2xl border border-gray-100 p-4 w-72"
+          className="absolute top-10 left-0 z-50 rounded-2xl shadow-2xl p-4 w-72"
+          style={{
+            background: 'rgba(15, 8, 40, 0.97)',
+            border: '1px solid rgba(255,255,255,0.12)',
+            backdropFilter: 'blur(24px)',
+            WebkitBackdropFilter: 'blur(24px)',
+          }}
         >
-          {/* Hint */}
-          <p className="text-[11px] text-gray-400 text-center mb-3" dir="rtl">
+          <p className="text-[11px] text-[#5B4F7A] text-center mb-3" dir="rtl">
             {step === 'from' ? 'בחר תאריך התחלה' : 'בחר תאריך סיום'}
           </p>
 
-          {/* Quick presets */}
           <div dir="rtl" className="grid grid-cols-2 gap-1.5 mb-4">
             {PRESETS.map(p => (
               <button
                 key={p.label}
                 onClick={() => applyPreset(p.days)}
                 dir="rtl"
-                className="text-xs bg-[#EDE9FE] text-[#7C3AED] font-medium px-3 py-1.5 rounded-full hover:bg-[#DDD6FE] transition text-center"
+                className="text-xs font-medium px-3 py-1.5 rounded-full transition text-center text-[#C084FC]"
+                style={{ background: 'rgba(155,111,214,0.2)' }}
               >
                 {p.label}
               </button>
             ))}
           </div>
 
-          <div className="border-t border-gray-100 my-3" />
+          <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }} className="my-3" />
 
-          {/* Month nav */}
           <div className="flex items-center justify-between mb-2 px-1">
-            <button onClick={prevMonth} className="p-1 text-gray-400 hover:text-gray-700 transition">
+            <button onClick={prevMonth} className="p-1 text-[#5B4F7A] hover:text-[#EDE9FE] transition">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M15 18l-6-6 6-6"/>
               </svg>
             </button>
-            <span className="text-sm font-semibold text-gray-700">
+            <span className="text-sm font-semibold text-[#EDE9FE]">
               {MONTHS[viewMonth]} {viewYear}
             </span>
-            <button onClick={nextMonth} className="p-1 text-gray-400 hover:text-gray-700 transition">
+            <button onClick={nextMonth} className="p-1 text-[#5B4F7A] hover:text-[#EDE9FE] transition">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M9 18l6-6-6-6"/>
               </svg>
             </button>
           </div>
 
-          {/* Day-of-week headers (Sun → Sat) */}
           <div className="grid grid-cols-7 mb-1">
             {DAYS.map(d => (
-              <div key={d} className="text-center text-[10px] font-semibold text-gray-400 py-1">{d}</div>
+              <div key={d} className="text-center text-[10px] font-semibold text-[#5B4F7A] py-1">{d}</div>
             ))}
           </div>
 
-          {/* Day cells */}
           <div className="grid grid-cols-7 gap-y-0.5">
             {cells.map((day, i) => {
               if (!day) return <div key={i} />
@@ -183,13 +185,14 @@ export default function DateFilterBubble({ value, onChange }: Props) {
                 <button
                   key={i}
                   onClick={() => pickDay(day)}
-                  className={`text-xs h-8 w-full rounded-lg font-medium transition ${
+                  className="text-xs h-8 w-full rounded-lg font-medium transition"
+                  style={
                     isFrom || isTo
-                      ? 'bg-[#7C3AED] text-white'
+                      ? { background: '#9B6FD6', color: 'white' }
                       : ranged
-                      ? 'bg-[#EDE9FE] text-[#7C3AED]'
-                      : 'text-gray-700 hover:bg-gray-100'
-                  }`}
+                      ? { background: 'rgba(155,111,214,0.2)', color: '#C084FC' }
+                      : { color: '#9B8EC4' }
+                  }
                 >
                   {day}
                 </button>
@@ -197,18 +200,19 @@ export default function DateFilterBubble({ value, onChange }: Props) {
             })}
           </div>
 
-          {/* Footer */}
           <div className="flex gap-2 mt-4">
             <button
               onClick={clear}
-              className="flex-1 py-2.5 text-xs font-semibold text-gray-500 border border-gray-200 rounded-xl hover:bg-gray-50 transition"
+              className="flex-1 py-2.5 text-xs font-semibold rounded-xl transition text-[#9B8EC4]"
+              style={{ border: '1px solid rgba(255,255,255,0.12)' }}
             >
               נקה
             </button>
             <button
               onClick={apply}
               disabled={!draft.from}
-              className="flex-1 py-2.5 text-xs font-semibold text-white bg-[#7C3AED] rounded-xl disabled:opacity-40 hover:bg-[#6D28D9] transition"
+              className="flex-1 py-2.5 text-xs font-semibold text-white rounded-xl disabled:opacity-40 transition"
+              style={{ background: '#9B6FD6' }}
             >
               החל
             </button>

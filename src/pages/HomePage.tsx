@@ -23,7 +23,6 @@ export default function HomePage() {
       .finally(() => setLoading(false))
   }, [])
 
-  // Sort: Active newest-first, then Resolved
   const sorted = [...worries].sort((a, b) => {
     if (a.status !== b.status) return a.status === 'Active' ? -1 : 1
     return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
@@ -41,23 +40,29 @@ export default function HomePage() {
     return !q || w.title.toLowerCase().includes(q) || (w.description ?? '').toLowerCase().includes(q)
   })
 
+  const activeCount = worries.filter(w => w.status === 'Active').length
+  const resolvedCount = worries.filter(w => w.status === 'Resolved').length
+
   return (
     <div className="app-shell flex flex-col min-h-dvh">
-      {/* Purple header */}
-      <div className="bg-[#7C3AED] pt-6 pb-8 px-5 rounded-b-[32px]">
+      {/* Header */}
+      <div
+        className="pt-6 pb-8 px-5 rounded-b-[32px]"
+        style={{ background: 'linear-gradient(160deg, #1E0A4F 0%, #0A0818 100%)' }}
+      >
         <div className="flex items-center justify-between">
           <h1 className="text-white text-2xl font-bold">שלום, {user?.name ?? '…'} 👋</h1>
           <UserMenu />
         </div>
-        <p className="text-purple-200 text-sm mt-0.5">
+        <p className="text-[#9B8EC4] text-sm mt-0.5">
           {worries.length === 0
             ? 'איך אתה מרגיש היום?'
-            : `${worries.filter(w => w.status === 'Active').length} פעילות · ${worries.filter(w => w.status === 'Resolved').length} נפתרו`}
+            : `${activeCount} פעילות · ${resolvedCount} נפתרו`}
         </p>
 
         {/* Search */}
         <div className="mt-5 relative">
-          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#5B4F7A]">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
             </svg>
@@ -66,7 +71,11 @@ export default function HomePage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="חיפוש דאגות…"
-            className="w-full bg-white rounded-2xl pl-10 pr-4 py-3 text-sm text-gray-700 outline-none"
+            className="w-full rounded-2xl pl-10 pr-4 py-3 text-sm text-[#EDE9FE] outline-none"
+            style={{
+              background: 'rgba(255,255,255,0.10)',
+              border: '1px solid rgba(255,255,255,0.12)',
+            }}
           />
         </div>
       </div>
@@ -77,11 +86,11 @@ export default function HomePage() {
           <button
             key={f}
             onClick={() => setFilter(f)}
-            className={`text-xs font-semibold px-4 py-1.5 rounded-full transition ${
-              filter === f
-                ? 'bg-[#7C3AED] text-white'
-                : 'bg-white text-gray-500 border border-gray-200'
-            }`}
+            className={`text-xs font-semibold px-4 py-1.5 rounded-full transition`}
+            style={filter === f
+              ? { background: '#9B6FD6', color: 'white', boxShadow: '0 0 10px rgba(155,111,214,0.4)' }
+              : { background: 'rgba(255,255,255,0.07)', color: '#9B8EC4', border: '1px solid rgba(255,255,255,0.12)' }
+            }
           >
             {f === 'All' ? 'הכל' : f === 'Active' ? 'פעיל' : 'נפתר'}
           </button>
@@ -92,16 +101,16 @@ export default function HomePage() {
       {/* List */}
       <div className="flex-1 px-5 pt-4 pb-28 space-y-3">
         {loading ? (
-          <div className="text-center text-gray-400 text-sm pt-12">Loading…</div>
+          <div className="text-center text-[#5B4F7A] text-sm pt-12">טוען…</div>
         ) : filtered.length === 0 ? (
-          <div className="text-center pt-16">
+          <div className="text-center pt-16 animate-fade-up">
             <div className="text-5xl mb-4">🔮</div>
-            <p className="text-gray-500 font-medium">אין דאגות עדיין</p>
-            <p className="text-gray-400 text-sm mt-1">לחץ + כדי להוסיף את הראשונה</p>
+            <p className="text-[#9B8EC4] font-medium">אין דאגות עדיין</p>
+            <p className="text-[#5B4F7A] text-sm mt-1">לחץ + כדי להוסיף את הראשונה</p>
           </div>
         ) : (
-          filtered.map((w) => (
-            <WorryCard key={w.id} worry={w} onClick={() => navigate(`/worries/${w.id}`)} />
+          filtered.map((w, i) => (
+            <WorryCard key={w.id} worry={w} index={i} onClick={() => navigate(`/worries/${w.id}`)} />
           ))
         )}
       </div>
@@ -109,7 +118,11 @@ export default function HomePage() {
       {/* FAB */}
       <button
         onClick={() => navigate('/worries/new')}
-        className="fixed bottom-24 left-5 w-14 h-14 bg-[#7C3AED] hover:bg-[#6D28D9] text-white rounded-full shadow-lg ring-4 ring-[#7C3AED]/25 flex items-center justify-center text-2xl transition z-10"
+        className="fixed bottom-24 left-5 w-14 h-14 text-white rounded-full flex items-center justify-center text-2xl z-10 active:scale-95 transition-transform"
+        style={{
+          background: '#9B6FD6',
+          boxShadow: '0 0 20px 6px rgba(155,111,214,0.5)',
+        }}
       >
         +
       </button>
