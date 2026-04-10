@@ -7,7 +7,6 @@ import { authApi } from '../api'
 
 const schema = z.object({
   name: z.string().min(1, 'שם נדרש').max(100),
-  username: z.string().min(2, 'לפחות 2 תווים').max(50).regex(/^\S+$/, 'ללא רווחים'),
   email: z.string().min(1, 'אימייל נדרש').email('כתובת אימייל לא תקינה'),
   password: z.string().min(6, 'לפחות 6 תווים'),
   confirmPassword: z.string(),
@@ -45,7 +44,7 @@ export default function RegisterPage() {
   const onSubmit = async (data: FormData) => {
     try {
       setError('')
-      const res = await authApi.register({ username: data.username, password: data.password, name: data.name, email: data.email })
+      const res = await authApi.register({ password: data.password, name: data.name, email: data.email })
       setPendingEmail(res.email)
     } catch (err: any) {
       setError(err.response?.data?.error ?? 'משהו השתבש. אנא נסה שוב.')
@@ -104,7 +103,6 @@ export default function RegisterPage() {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {[
             { label: 'שמך', name: 'name' as const, icon: iconUser, placeholder: 'אלכס' },
-            { label: 'שם משתמש', name: 'username' as const, icon: iconUser, placeholder: 'alex_42', dir: 'ltr' as const },
             { label: 'אימייל', name: 'email' as const, icon: iconMail, placeholder: 'alex@example.com', type: 'email', dir: 'ltr' as const },
             { label: 'סיסמה', name: 'password' as const, icon: iconLock, placeholder: '••••••••', type: 'password', dir: 'ltr' as const },
             { label: 'אימות סיסמה', name: 'confirmPassword' as const, icon: iconLock, placeholder: '••••••••', type: 'password', dir: 'ltr' as const },

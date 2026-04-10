@@ -10,7 +10,7 @@ export default function VerifyEmailPage() {
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading')
   const [errorMessage, setErrorMessage] = useState('')
   const [isExpired, setIsExpired] = useState(false)
-  const [resendUsername, setResendUsername] = useState('')
+  const [resendEmail, setResendEmail] = useState('')
   const [resendLoading, setResendLoading] = useState(false)
   const [resendDone, setResendDone] = useState(false)
   const [resendError, setResendError] = useState('')
@@ -23,7 +23,7 @@ export default function VerifyEmailPage() {
     if (!token) { setErrorMessage('קישור לא תקין.'); setStatus('error'); return }
     authApi.verifyEmail(token)
       .then((res) => {
-        setAuth(res.token, { userId: res.userId, username: res.username, name: res.name, isEmailVerified: res.isEmailVerified })
+        setAuth(res.token, { userId: res.userId, name: res.name, isEmailVerified: res.isEmailVerified })
         setStatus('success')
         setTimeout(() => navigate('/home'), 1500)
       })
@@ -36,10 +36,10 @@ export default function VerifyEmailPage() {
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleResend = async () => {
-    if (!resendUsername.trim()) { setResendError('הזן שם משתמש.'); return }
+    if (!resendEmail.trim()) { setResendError('הזן כתובת אימייל.'); return }
     try {
       setResendLoading(true); setResendError('')
-      await authApi.resendVerification(resendUsername.trim())
+      await authApi.resendVerification(resendEmail.trim())
       setResendDone(true)
     } catch (err: any) {
       setResendError(err.response?.data?.error ?? 'שליחה נכשלה.')
@@ -76,9 +76,9 @@ export default function VerifyEmailPage() {
 
           {isExpired && !resendDone && (
             <div className="w-full max-w-xs text-right mb-4 animate-fade-up stagger-3">
-              <p className="text-sm text-tx2 mb-3 font-light">שלח קישור חדש — הזן את שם המשתמש שלך:</p>
-              <input value={resendUsername} onChange={(e) => setResendUsername(e.target.value)}
-                dir="ltr" autoCapitalize="none" placeholder="username" className="input-dark mb-2" />
+              <p className="text-sm text-tx2 mb-3 font-light">שלח קישור חדש — הזן את כתובת האימייל שלך:</p>
+              <input value={resendEmail} onChange={(e) => setResendEmail(e.target.value)}
+                type="email" dir="ltr" autoCapitalize="none" placeholder="alex@example.com" className="input-dark mb-2" />
               {resendError && <p className="text-xs mb-2" style={{ color: 'var(--error-color)' }}>{resendError}</p>}
               <button onClick={handleResend} disabled={resendLoading} className="btn-primary w-full py-3 text-sm">
                 {resendLoading ? 'שולח…' : 'שלח קישור חדש'}

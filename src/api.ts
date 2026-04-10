@@ -27,10 +27,10 @@ api.interceptors.response.use(
 
 // Auth
 export const authApi = {
-  register: (data: { username: string; password: string; name: string; email: string }) =>
+  register: (data: { password: string; name: string; email: string }) =>
     api.post<RegisterResponse>('/auth/register', data).then((r) => r.data),
 
-  login: (data: { username: string; password: string }) =>
+  login: (data: { email: string; password: string }) =>
     api.post<AuthResponse>('/auth/login', data).then((r) => r.data),
 
   verifyEmail: (token: string) =>
@@ -42,8 +42,8 @@ export const authApi = {
   resetPassword: (token: string, newPassword: string) =>
     api.post<AuthResponse>('/auth/reset-password', { token, newPassword }).then((r) => r.data),
 
-  resendVerification: (username: string) =>
-    api.post<{ message: string }>('/auth/resend-verification', { username }).then((r) => r.data),
+  resendVerification: (email: string) =>
+    api.post<{ message: string }>('/auth/resend-verification', { email }).then((r) => r.data),
 }
 
 // Worries

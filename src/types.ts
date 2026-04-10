@@ -18,7 +18,6 @@ export interface Worry {
 export interface AuthResponse {
   token: string
   userId: string
-  username: string
   name: string
   isEmailVerified: boolean
 }

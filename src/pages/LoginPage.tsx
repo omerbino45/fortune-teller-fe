@@ -7,7 +7,7 @@ import { authApi } from '../api'
 import { useAuthStore } from '../store/authStore'
 
 const schema = z.object({
-  username: z.string().min(1, 'שם משתמש נדרש'),
+  email: z.string().min(1, 'אימייל נדרש').email('כתובת אימייל לא תקינה'),
   password: z.string().min(1, 'סיסמה נדרשת'),
 })
 type FormData = z.infer<typeof schema>
@@ -28,7 +28,7 @@ export default function LoginPage() {
     try {
       setError(''); setEmailNotVerified(false)
       const res = await authApi.login(data)
-      setAuth(res.token, { userId: res.userId, username: res.username, name: res.name, isEmailVerified: res.isEmailVerified })
+      setAuth(res.token, { userId: res.userId, name: res.name, isEmailVerified: res.isEmailVerified })
       navigate('/home')
     } catch (err: any) {
       if (err.response?.status === 403 && err.response?.data?.code === 'EMAIL_NOT_VERIFIED') {
@@ -44,7 +44,7 @@ export default function LoginPage() {
   const handleResendVerification = async () => {
     try {
       setResendLoading(true)
-      await authApi.resendVerification(getValues('username'))
+      await authApi.resendVerification(getValues('email'))
       setResendSuccess(true)
     } catch (err: any) {
       setError(err.response?.data?.error ?? 'שליחה נכשלה. נסה שוב.')
@@ -92,16 +92,16 @@ export default function LoginPage() {
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
-            <label className="text-sm font-semibold text-tx2 mb-1.5 block">שם משתמש</label>
+            <label className="text-sm font-semibold text-tx2 mb-1.5 block">אימייל</label>
             <div className="relative">
               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-tx3">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                  <rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
                 </svg>
               </span>
-              <input {...register('username')} autoCapitalize="none" autoCorrect="off" dir="ltr" className="input-dark !pr-10" placeholder="username" />
+              <input {...register('email')} type="email" autoCapitalize="none" autoCorrect="off" dir="ltr" className="input-dark !pr-10" placeholder="alex@example.com" />
             </div>
-            {errors.username && <p className="text-xs mt-1" style={{ color: 'var(--error-color)' }}>{errors.username.message}</p>}
+            {errors.email && <p className="text-xs mt-1" style={{ color: 'var(--error-color)' }}>{errors.email.message}</p>}
           </div>
 
           <div>

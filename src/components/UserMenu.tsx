@@ -41,7 +41,6 @@ export default function UserMenu() {
             {/* User info */}
             <div className="px-4 py-2.5" style={{ borderBottom: '1px solid var(--divider)' }}>
               <p className="text-sm font-semibold text-tx1">{user?.name}</p>
-              <p className="text-xs text-tx3 font-light">@{user?.username}</p>
             </div>
 
             {/* Theme toggle — pill */}

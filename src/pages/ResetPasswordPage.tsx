@@ -31,7 +31,7 @@ export default function ResetPasswordPage() {
       setError('')
       if (!token) { setError('קישור לא תקין.'); return }
       const res = await authApi.resetPassword(token, data.newPassword)
-      setAuth(res.token, { userId: res.userId, username: res.username, name: res.name, isEmailVerified: res.isEmailVerified })
+      setAuth(res.token, { userId: res.userId, name: res.name, isEmailVerified: res.isEmailVerified })
       navigate('/home')
     } catch (err: any) {
       setError(err.response?.data?.error ?? 'איפוס נכשל. אנא נסה שוב.')
