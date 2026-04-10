@@ -30,9 +30,7 @@ function CircleMeter({ value }: { value: number }) {
   return (
     <div className="relative shrink-0 w-12 h-12">
       <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
-        {/* Track */}
-        <circle cx={cx} cy={cy} r={r} fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth="4" />
-        {/* Fill */}
+        <circle cx={cx} cy={cy} r={r} fill="none" stroke="var(--circle-track)" strokeWidth="4" />
         <circle
           cx={cx} cy={cy} r={r}
           fill="none"
@@ -54,10 +52,16 @@ function CircleMeter({ value }: { value: number }) {
   )
 }
 
-export default function WorryCard({ worry, onClick, index = 0 }: { worry: Worry; onClick: () => void; index?: number }) {
+export default function WorryCard({ worry, onClick, index = 0 }: {
+  worry: Worry
+  onClick: () => void
+  index?: number
+}) {
   const [hovered, setHovered] = useState(false)
   const isResolved = worry.status === 'Resolved'
-  const displayValue = isResolved && worry.postAnxietyLevel != null ? worry.postAnxietyLevel : worry.preAnxietyLevel
+  const displayValue = isResolved && worry.postAnxietyLevel != null
+    ? worry.postAnxietyLevel
+    : worry.preAnxietyLevel
   const glowColor = heatColor(displayValue)
   const stagger = index < 4 ? `stagger-${index + 1}` : ''
 
@@ -66,35 +70,39 @@ export default function WorryCard({ worry, onClick, index = 0 }: { worry: Worry;
       onClick={onClick}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className={`w-full glass-card rounded-2xl overflow-hidden flex active:scale-[0.98] transition-transform animate-fade-up ${stagger}`}
+      className={`w-full glass-card rounded-2xl overflow-hidden flex active:scale-[0.98] animate-fade-up ${stagger}`}
       style={{
-        boxShadow: hovered ? `0 0 22px 3px ${glowColor}30` : '0 2px 12px rgba(0,0,0,0.3)',
+        boxShadow: hovered
+          ? `0 0 22px 3px ${glowColor}30`
+          : 'var(--card-shadow)',
         transition: 'box-shadow 0.25s ease, transform 0.1s',
       }}
     >
-      {/* Text content */}
       <div className="flex-1 min-w-0 px-4 py-4">
         <div className="flex items-center gap-2">
-          <p className="text-[#EDE9FE] font-semibold text-sm truncate min-w-0 text-right">{worry.title}</p>
-          <span className={`shrink-0 text-xs font-semibold px-2.5 py-0.5 rounded-full ${
-            isResolved
-              ? 'bg-[rgba(110,231,183,0.2)] text-[#6EE7B7]'
-              : 'bg-[rgba(253,186,116,0.2)] text-[#FDBA74]'
-          }`}>
+          <p className="text-tx1 font-semibold text-sm truncate min-w-0 text-right">{worry.title}</p>
+          <span
+            className="shrink-0 text-xs font-semibold px-2.5 py-0.5 rounded-full"
+            style={{
+              background: isResolved ? 'var(--chip-resolved-bg)' : 'var(--chip-active-bg)',
+              color: isResolved ? 'var(--chip-resolved-color)' : 'var(--chip-active-color)',
+            }}
+          >
             {isResolved ? 'נפתר' : 'פעיל'}
           </span>
         </div>
 
         {worry.description && (
-          <p className="text-[#5B4F7A] text-xs mt-1.5 line-clamp-2 leading-relaxed text-right">
+          <p className="text-tx3 text-xs mt-1.5 line-clamp-2 leading-relaxed text-right font-light">
             {worry.description}
           </p>
         )}
 
-        <p className="text-[#3D3058] text-[11px] mt-2 text-right">{relativeDate(worry.createdAt)}</p>
+        <p className="text-tx3 text-[11px] mt-2 text-right" style={{ fontWeight: 200 }}>
+          {relativeDate(worry.createdAt)}
+        </p>
       </div>
 
-      {/* Circle meter — trailing (left) side in RTL */}
       <div className="flex items-center px-3">
         <CircleMeter value={displayValue} />
       </div>

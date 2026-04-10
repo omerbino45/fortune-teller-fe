@@ -11,16 +11,13 @@ export default function AnxietyBar({ value }: { value: number }) {
 
   return (
     <div className="flex items-center gap-3">
-      <div className="flex-1 rounded-full h-3 overflow-hidden" style={{ background: 'rgba(255,255,255,0.10)' }}>
+      <div className="flex-1 rounded-full h-3 overflow-hidden" style={{ background: 'var(--circle-track)' }}>
         <div
           className="h-full rounded-full transition-all"
-          style={{
-            width: `${value}%`,
-            background: `linear-gradient(90deg, ${light}, ${dark})`,
-          }}
+          style={{ width: `${value}%`, background: `linear-gradient(90deg, ${light}, ${dark})` }}
         />
       </div>
-      <span className="text-sm font-bold w-8 text-right" style={{ color: dark }}>{value}</span>
+      <span className="text-sm font-semibold w-8 text-right" style={{ color: dark }}>{value}</span>
     </div>
   )
 }
