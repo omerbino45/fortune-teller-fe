@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import { worriesApi } from '../api'
 import type { Worry } from '../types'
 import AnxietyBar from '../components/AnxietyBar'
@@ -138,74 +139,87 @@ export default function WorryDetailPage() {
           </div>
         )}
 
-        {editing ? (
-          <div className="glass-card rounded-2xl px-5 py-4">
-            <label className="text-xs font-semibold text-tx3 uppercase tracking-wide mb-2 block">📝 תיאור</label>
-            <textarea value={editDescription} onChange={(e) => setEditDescription(e.target.value)}
-              rows={3} className="input-dark !rounded-xl resize-none" placeholder="הקשר נוסף…" />
-          </div>
-        ) : (
-          worry.description && (
-            <Section label="תיאור" icon="📝">
-              <p className="text-tx1 text-sm leading-relaxed font-light">{worry.description}</p>
-            </Section>
-          )
-        )}
+        <A i={0}>
+          {editing ? (
+            <div className="glass-card rounded-2xl px-5 py-4">
+              <label className="text-xs font-semibold text-tx3 uppercase tracking-wide mb-2 block">📝 תיאור</label>
+              <textarea value={editDescription} onChange={(e) => setEditDescription(e.target.value)}
+                rows={3} className="input-dark !rounded-xl resize-none" placeholder="הקשר נוסף…" />
+            </div>
+          ) : (
+            worry.description && (
+              <Section label="תיאור" icon="📝">
+                <p className="text-tx1 text-sm leading-relaxed font-light">{worry.description}</p>
+              </Section>
+            )
+          )}
+        </A>
 
-        {editing ? (
-          <FactorsList factors={editFactors} onChange={setEditFactors} />
-        ) : (
-          worry.factors.length > 0 && (
-            <Section label="פקטורים" icon="🏷️">
-              <div className="flex flex-wrap gap-2">
-                {worry.factors.map((f, i) => (
-                  <span key={i} className="text-xs font-medium px-3 py-1.5 rounded-full"
-                    style={{ background: 'var(--filter-inactive-bg)', color: 'var(--primary)' }}>
-                    {f}
-                  </span>
-                ))}
-              </div>
-            </Section>
-          )
-        )}
+        <A i={1}>
+          {editing ? (
+            <FactorsList factors={editFactors} onChange={setEditFactors} />
+          ) : (
+            worry.factors.length > 0 && (
+              <Section label="פקטורים" icon="🏷️">
+                <div className="flex flex-wrap gap-2">
+                  {worry.factors.map((f, i) => (
+                    <span key={i} className="text-xs font-medium px-3 py-1.5 rounded-full"
+                      style={{ background: 'var(--filter-inactive-bg)', color: 'var(--primary)' }}>
+                      {f}
+                    </span>
+                  ))}
+                </div>
+              </Section>
+            )
+          )}
+        </A>
 
-        <Section label="חרדה בעת יצירה" icon="⚡">
-          <AnxietyBar value={worry.preAnxietyLevel} />
-        </Section>
-
-        <Section label="נבואה" icon="🔮">
-          <p className="text-tx1 text-sm leading-relaxed font-light">{worry.prophecy}</p>
-        </Section>
-
-        {editing ? (
-          <SliderField label="ביטחון בנבואה" value={editAssurance} onChange={setEditAssurance} />
-        ) : (
-          <Section label="ביטחון בנבואה" icon="🎯">
-            <AnxietyBar value={worry.assurance} />
+        <A i={2}>
+          <Section label="חרדה בעת יצירה" icon="⚡">
+            <AnxietyBar value={worry.preAnxietyLevel} />
           </Section>
-        )}
+        </A>
+
+        <A i={3}>
+          <Section label="נבואה" icon="🔮">
+            <p className="text-tx1 text-sm leading-relaxed font-light">{worry.prophecy}</p>
+          </Section>
+        </A>
+
+        <A i={4}>
+          {editing ? (
+            <SliderField label="ביטחון בנבואה" value={editAssurance} onChange={setEditAssurance} />
+          ) : (
+            <Section label="ביטחון בנבואה" icon="🎯">
+              <AnxietyBar value={worry.assurance} />
+            </Section>
+          )}
+        </A>
 
         {isResolved && (
           <>
-            {editing ? (
-              <>
+            <A i={5}>
+              {editing ? (
                 <div className="glass-card rounded-2xl px-5 py-4">
                   <label className="text-xs font-semibold text-tx3 uppercase tracking-wide mb-2 block">✅ תוצאה בפועל</label>
                   <textarea value={editActualOutcome} onChange={(e) => setEditActualOutcome(e.target.value)}
                     rows={3} className="input-dark !rounded-xl resize-none" placeholder="מה קרה בפועל…" />
                 </div>
-                <SliderField label="רמת חרדה לאחר מכן" value={editPostAnxiety} onChange={setEditPostAnxiety} />
-              </>
-            ) : (
-              <>
+              ) : (
                 <Section label="תוצאה בפועל" icon="✅">
                   <p className="text-tx1 text-sm leading-relaxed font-light">{worry.actualOutcome}</p>
                 </Section>
+              )}
+            </A>
+            <A i={6}>
+              {editing ? (
+                <SliderField label="רמת חרדה לאחר מכן" value={editPostAnxiety} onChange={setEditPostAnxiety} />
+              ) : (
                 <Section label="חרדה אחרי האירוע" icon="📉">
                   <AnxietyBar value={worry.postAnxietyLevel!} />
                 </Section>
-              </>
-            )}
+              )}
+            </A>
           </>
         )}
       </div>
@@ -229,6 +243,18 @@ export default function WorryDetailPage() {
         <ResolveSheet worryId={worry.id} onResolved={onResolved} onDismiss={() => setShowResolve(false)} />
       )}
     </div>
+  )
+}
+
+function A({ i, children }: { i: number; children: React.ReactNode }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, delay: i * 0.06 }}
+    >
+      {children}
+    </motion.div>
   )
 }
 
