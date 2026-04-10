@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { motion } from 'framer-motion'
 import { worriesApi } from '../api'
 import type { Worry } from '../types'
 import SliderField from './SliderField'
@@ -39,8 +40,11 @@ export default function ResolveSheet({ worryId, onResolved, onDismiss }: Props) 
         style={{ background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)' }}
         onClick={onDismiss}
       />
-      <div
+      <motion.div
         className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] rounded-t-[28px] z-30 px-6 pt-4 pb-10 shadow-2xl"
+        initial={{ y: '100%' }}
+        animate={{ y: 0 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
         style={{
           background: 'var(--sheet-bg)',
           border: '1px solid var(--bord)',
@@ -89,7 +93,7 @@ export default function ResolveSheet({ worryId, onResolved, onDismiss }: Props) 
             {saving ? 'שומר…' : 'אישור סיום'}
           </button>
         </div>
-      </div>
+      </motion.div>
     </>
   )
 }

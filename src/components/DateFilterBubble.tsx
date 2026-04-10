@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 
 export interface DateRange {
   from: Date | null
@@ -103,10 +104,15 @@ export default function DateFilterBubble({ value, onChange }: Props) {
         {label}
       </button>
 
+      <AnimatePresence>
       {open && (
-        <div
+        <motion.div
           dir="ltr"
           className="absolute top-10 left-0 z-50 rounded-2xl shadow-2xl p-4 w-72"
+          initial={{ opacity: 0, scale: 0.95, y: -6 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.95, y: -6 }}
+          transition={{ duration: 0.18, ease: 'easeOut' }}
           style={{
             background: 'var(--dropdown-bg)',
             border: '1px solid var(--dropdown-bord)',
@@ -197,8 +203,9 @@ export default function DateFilterBubble({ value, onChange }: Props) {
               החל
             </button>
           </div>
-        </div>
+        </motion.div>
       )}
+      </AnimatePresence>
     </div>
   )
 }

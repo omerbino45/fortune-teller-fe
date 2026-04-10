@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { AnimatePresence, motion } from 'framer-motion'
 import { worriesApi } from '../api'
 import { useAuthStore } from '../store/authStore'
 import type { Worry } from '../types'
@@ -90,7 +91,11 @@ export default function HomePage() {
       {/* List */}
       <div className="flex-1 px-5 pt-4 pb-28 space-y-3">
         {loading ? (
-          <div className="text-center text-tx3 text-sm pt-12 font-light">טוען…</div>
+          <>
+            <SkeletonCard />
+            <SkeletonCard />
+            <SkeletonCard />
+          </>
         ) : filtered.length === 0 ? (
           <div className="text-center pt-16 animate-fade-up">
             <div className="text-5xl mb-4">🔮</div>
@@ -98,9 +103,20 @@ export default function HomePage() {
             <p className="text-tx3 text-sm mt-1 font-light">לחץ + כדי להוסיף את הראשונה</p>
           </div>
         ) : (
-          filtered.map((w, i) => (
-            <WorryCard key={w.id} worry={w} index={i} onClick={() => navigate(`/worries/${w.id}`)} />
-          ))
+          <AnimatePresence>
+            {filtered.map((w, i) => (
+              <motion.div
+                key={w.id}
+                layout
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8, transition: { duration: 0.2 } }}
+                transition={{ duration: 0.3, delay: i < 4 ? i * 0.04 : 0 }}
+              >
+                <WorryCard worry={w} onClick={() => navigate(`/worries/${w.id}`)} />
+              </motion.div>
+            ))}
+          </AnimatePresence>
         )}
       </div>
 
@@ -114,6 +130,25 @@ export default function HomePage() {
       </button>
 
       <BottomNav active="home" />
+    </div>
+  )
+}
+
+function SkeletonCard() {
+  return (
+    <div className="glass-card rounded-2xl overflow-hidden flex h-[80px] relative">
+      <div
+        className="absolute top-0 right-0 bottom-0 w-[3px] skeleton"
+        style={{ background: 'var(--in-bord)' }}
+      />
+      <div className="flex-1 px-4 py-4 space-y-2.5">
+        <div className="skeleton h-3.5 rounded-full w-3/4" />
+        <div className="skeleton h-2.5 rounded-full w-1/2" />
+        <div className="skeleton h-2 rounded-full w-1/4" />
+      </div>
+      <div className="flex items-center pl-3 pr-5 pt-3">
+        <div className="skeleton w-12 h-12 rounded-full" />
+      </div>
     </div>
   )
 }

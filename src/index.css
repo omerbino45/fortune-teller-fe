@@ -199,6 +199,24 @@ body {
   .stagger-2 { animation-delay: 0.08s; }
   .stagger-3 { animation-delay: 0.12s; }
   .stagger-4 { animation-delay: 0.16s; }
+
+  /* Skeleton loading */
+  @keyframes skeleton-sweep {
+    from { transform: translateX(-150%); }
+    to   { transform: translateX(250%); }
+  }
+  .skeleton {
+    position: relative;
+    background: var(--in-bg);
+    overflow: hidden;
+  }
+  .skeleton::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent 0%, var(--bord) 50%, transparent 100%);
+    animation: skeleton-sweep 1.6s ease-in-out infinite;
+  }
 }
 
 /* ── Custom range slider ──────────────────────────────────────── */
