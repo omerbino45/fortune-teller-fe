@@ -20,7 +20,7 @@ function heatColor(v: number): string {
 
 function statusGradient(isResolved: boolean): string {
   return isResolved
-    ? 'linear-gradient(180deg, #BBD0B5, #7A9B6E)'
+    ? 'linear-gradient(180deg, #A8E6A3, #5DB559)'
     : 'linear-gradient(180deg, #D8B4FE, #A78BFA)'
 }
 
@@ -73,7 +73,7 @@ export default function WorryCard({ worry, onClick }: {
   const displayValue = isResolved && worry.postAnxietyLevel != null
     ? worry.postAnxietyLevel
     : worry.preAnxietyLevel
-  const glowColor = isResolved ? '#7A9B6E' : '#A78BFA'
+  const glowColor = isResolved ? '#5DB559' : '#A78BFA'
 
   return (
     <button
