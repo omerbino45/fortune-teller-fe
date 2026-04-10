@@ -20,8 +20,8 @@ function heatColor(v: number): string {
 
 function statusGradient(isResolved: boolean): string {
   return isResolved
-    ? 'linear-gradient(180deg, #6EE7B7, #10B981)'
-    : 'linear-gradient(180deg, #FDBA74, #F59E0B)'
+    ? 'linear-gradient(180deg, #BBD0B5, #7A9B6E)'
+    : 'linear-gradient(180deg, #D8B4FE, #A78BFA)'
 }
 
 function CircleMeter({ value }: { value: number }) {
@@ -73,7 +73,7 @@ export default function WorryCard({ worry, onClick }: {
   const displayValue = isResolved && worry.postAnxietyLevel != null
     ? worry.postAnxietyLevel
     : worry.preAnxietyLevel
-  const glowColor = isResolved ? '#10B981' : '#F59E0B'
+  const glowColor = isResolved ? '#7A9B6E' : '#A78BFA'
 
   return (
     <button
@@ -83,7 +83,7 @@ export default function WorryCard({ worry, onClick }: {
       className="relative w-full glass-card rounded-2xl overflow-hidden flex active:scale-[0.98]"
       style={{
         boxShadow: hovered
-          ? `0 0 28px 6px ${glowColor}55`
+          ? `0 0 16px 2px ${glowColor}30`
           : 'var(--card-shadow)',
         transition: 'box-shadow 0.25s ease, transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)',
       }}
@@ -110,7 +110,7 @@ export default function WorryCard({ worry, onClick }: {
         </div>
 
         {worry.description && (
-          <p className="text-tx3 text-xs mt-1.5 line-clamp-2 leading-relaxed text-right font-light">
+          <p className="text-tx2 text-xs mt-1.5 line-clamp-2 leading-relaxed text-right font-light">
             {worry.description}
           </p>
         )}

@@ -6,7 +6,6 @@ import AnxietyBar from '../components/AnxietyBar'
 import SliderField from '../components/SliderField'
 import FactorsList from '../components/FactorsList'
 import ResolveSheet from '../components/ResolveSheet'
-import ProphecyReveal from '../components/ProphecyReveal'
 
 export default function WorryDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -175,9 +174,7 @@ export default function WorryDetailPage() {
         </Section>
 
         <Section label="נבואה" icon="🔮">
-          <ProphecyReveal>
-            <p className="text-tx1 text-sm leading-relaxed font-light">{worry.prophecy}</p>
-          </ProphecyReveal>
+          <p className="text-tx1 text-sm leading-relaxed font-light">{worry.prophecy}</p>
         </Section>
 
         {editing ? (
