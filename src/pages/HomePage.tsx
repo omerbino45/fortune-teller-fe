@@ -65,7 +65,7 @@ export default function HomePage() {
             onChange={(e) => setSearch(e.target.value)}
             placeholder="חיפוש דאגות…"
             className="w-full rounded-2xl pl-10 pr-4 py-3 text-sm outline-none font-light"
-            style={{ background: 'rgba(255,255,255,0.18)', border: '1px solid rgba(255,255,255,0.2)', color: 'white' }}
+            style={{ background: 'rgba(255,255,255,0.18)', border: '1px solid rgba(255,255,255,0.2)', color: 'white', fontSize: '16px' }}
           />
         </div>
       </div>
@@ -136,18 +136,15 @@ export default function HomePage() {
 
 function SkeletonCard() {
   return (
-    <div className="glass-card rounded-2xl overflow-hidden flex h-[80px] relative">
-      <div
-        className="absolute top-0 right-0 bottom-0 w-[3px] skeleton"
-        style={{ background: 'var(--in-bord)' }}
-      />
+    <div className="glass-card rounded-2xl overflow-hidden flex h-[80px] relative animate-pulse">
+      <div className="absolute top-0 right-0 bottom-0 w-[3px]" style={{ background: 'var(--in-bord)' }} />
       <div className="flex-1 px-4 py-4 space-y-2.5">
-        <div className="skeleton h-3.5 rounded-full w-3/4" />
-        <div className="skeleton h-2.5 rounded-full w-1/2" />
-        <div className="skeleton h-2 rounded-full w-1/4" />
+        <div className="h-3.5 rounded-full w-3/4" style={{ background: 'var(--in-bord)' }} />
+        <div className="h-2.5 rounded-full w-1/2" style={{ background: 'var(--in-bord)' }} />
+        <div className="h-2 rounded-full w-1/4" style={{ background: 'var(--in-bord)' }} />
       </div>
       <div className="flex items-center pl-3 pr-5 pt-3">
-        <div className="skeleton w-12 h-12 rounded-full" />
+        <div className="w-12 h-12 rounded-full" style={{ background: 'var(--in-bord)' }} />
       </div>
     </div>
   )

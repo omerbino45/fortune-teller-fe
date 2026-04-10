@@ -59,6 +59,7 @@ export default function FactorsList({ factors, onChange }: Props) {
           onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), add())}
           placeholder="הוסף גורם…"
           className="input-dark flex-1 !rounded-xl !px-3 !py-2.5 !text-sm"
+          style={{ fontSize: '16px' }}
         />
         <button
           type="button"
