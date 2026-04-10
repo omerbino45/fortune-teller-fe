@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { AnimatePresence, motion } from 'framer-motion'
 import { worriesApi } from '../api'
 import { useAuthStore } from '../store/authStore'
 import type { Worry } from '../types'
@@ -18,46 +19,43 @@ export default function HomePage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    worriesApi.getAll()
-      .then(setWorries)
-      .finally(() => setLoading(false))
+    worriesApi.getAll().then(setWorries).finally(() => setLoading(false))
   }, [])
 
-  // Sort: Active newest-first, then Resolved
-  const sorted = [...worries].sort((a, b) => {
-    if (a.status !== b.status) return a.status === 'Active' ? -1 : 1
-    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-  })
+  const sorted = [...worries].sort((a, b) =>
+    new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  )
 
   const filtered = sorted.filter((w) => {
     if (filter !== 'All' && w.status !== filter) return false
     if (dateRange.from && new Date(w.createdAt) < dateRange.from) return false
     if (dateRange.to) {
-      const endOfDay = new Date(dateRange.to)
-      endOfDay.setHours(23, 59, 59, 999)
-      if (new Date(w.createdAt) > endOfDay) return false
+      const end = new Date(dateRange.to)
+      end.setHours(23, 59, 59, 999)
+      if (new Date(w.createdAt) > end) return false
     }
     const q = search.toLowerCase()
     return !q || w.title.toLowerCase().includes(q) || (w.description ?? '').toLowerCase().includes(q)
   })
 
+  const activeCount   = worries.filter(w => w.status === 'Active').length
+  const resolvedCount = worries.filter(w => w.status === 'Resolved').length
+
   return (
     <div className="app-shell flex flex-col min-h-dvh">
-      {/* Purple header */}
-      <div className="bg-[#7C3AED] pt-6 pb-8 px-5 rounded-b-[32px]">
+      {/* Header */}
+      <div className="pt-6 pb-8 px-5 rounded-b-[32px]" style={{ background: 'var(--header-grad)' }}>
         <div className="flex items-center justify-between">
           <h1 className="text-white text-2xl font-bold">שלום, {user?.name ?? '…'} 👋</h1>
           <UserMenu />
         </div>
-        <p className="text-purple-200 text-sm mt-0.5">
-          {worries.length === 0
-            ? 'איך אתה מרגיש היום?'
-            : `${worries.filter(w => w.status === 'Active').length} פעילות · ${worries.filter(w => w.status === 'Resolved').length} נפתרו`}
+        <p className="text-white/60 text-sm mt-0.5 font-light">
+          {worries.length === 0 ? 'איך אתה מרגיש היום?' : `${activeCount} פעילות · ${resolvedCount} נפתרו`}
         </p>
 
         {/* Search */}
         <div className="mt-5 relative">
-          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/50">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
             </svg>
@@ -66,7 +64,8 @@ export default function HomePage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="חיפוש דאגות…"
-            className="w-full bg-white rounded-2xl pl-10 pr-4 py-3 text-sm text-gray-700 outline-none"
+            className="w-full rounded-2xl pl-10 pr-4 py-3 text-sm outline-none font-light"
+            style={{ background: 'rgba(255,255,255,0.18)', border: '1px solid rgba(255,255,255,0.2)', color: 'white' }}
           />
         </div>
       </div>
@@ -77,11 +76,11 @@ export default function HomePage() {
           <button
             key={f}
             onClick={() => setFilter(f)}
-            className={`text-xs font-semibold px-4 py-1.5 rounded-full transition ${
-              filter === f
-                ? 'bg-[#7C3AED] text-white'
-                : 'bg-white text-gray-500 border border-gray-200'
-            }`}
+            className="text-xs font-semibold px-4 py-1.5 rounded-full transition"
+            style={filter === f
+              ? { background: 'var(--primary)', color: 'white', boxShadow: '0 0 10px var(--primary-glow)' }
+              : { background: 'var(--filter-inactive-bg)', color: 'var(--filter-inactive-color)', border: '1px solid var(--bord)' }
+            }
           >
             {f === 'All' ? 'הכל' : f === 'Active' ? 'פעיל' : 'נפתר'}
           </button>
@@ -92,29 +91,64 @@ export default function HomePage() {
       {/* List */}
       <div className="flex-1 px-5 pt-4 pb-28 space-y-3">
         {loading ? (
-          <div className="text-center text-gray-400 text-sm pt-12">Loading…</div>
+          <>
+            <SkeletonCard />
+            <SkeletonCard />
+            <SkeletonCard />
+          </>
         ) : filtered.length === 0 ? (
-          <div className="text-center pt-16">
+          <div className="text-center pt-16 animate-fade-up">
             <div className="text-5xl mb-4">🔮</div>
-            <p className="text-gray-500 font-medium">אין דאגות עדיין</p>
-            <p className="text-gray-400 text-sm mt-1">לחץ + כדי להוסיף את הראשונה</p>
+            <p className="text-tx1 font-semibold">אין דאגות עדיין</p>
+            <p className="text-tx3 text-sm mt-1 font-light">לחץ + כדי להוסיף את הראשונה</p>
           </div>
         ) : (
-          filtered.map((w) => (
-            <WorryCard key={w.id} worry={w} onClick={() => navigate(`/worries/${w.id}`)} />
-          ))
+          <AnimatePresence>
+            {filtered.map((w, i) => (
+              <motion.div
+                key={w.id}
+                layout
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8, transition: { duration: 0.2 } }}
+                transition={{ duration: 0.3, delay: i < 4 ? i * 0.04 : 0 }}
+              >
+                <WorryCard worry={w} onClick={() => navigate(`/worries/${w.id}`)} />
+              </motion.div>
+            ))}
+          </AnimatePresence>
         )}
       </div>
 
       {/* FAB */}
       <button
         onClick={() => navigate('/worries/new')}
-        className="fixed bottom-24 left-5 w-14 h-14 bg-[#7C3AED] hover:bg-[#6D28D9] text-white rounded-full shadow-lg ring-4 ring-[#7C3AED]/25 flex items-center justify-center text-2xl transition z-10"
+        className="fixed bottom-24 left-5 w-14 h-14 text-white rounded-full flex items-center justify-center text-2xl z-10 active:scale-95 transition-transform"
+        style={{ background: 'var(--primary)', boxShadow: '0 0 20px 6px var(--primary-glow)' }}
       >
         +
       </button>
 
       <BottomNav active="home" />
+    </div>
+  )
+}
+
+function SkeletonCard() {
+  return (
+    <div className="glass-card rounded-2xl overflow-hidden flex h-[80px] relative">
+      <div
+        className="absolute top-0 right-0 bottom-0 w-[3px] skeleton"
+        style={{ background: 'var(--in-bord)' }}
+      />
+      <div className="flex-1 px-4 py-4 space-y-2.5">
+        <div className="skeleton h-3.5 rounded-full w-3/4" />
+        <div className="skeleton h-2.5 rounded-full w-1/2" />
+        <div className="skeleton h-2 rounded-full w-1/4" />
+      </div>
+      <div className="flex items-center pl-3 pr-5 pt-3">
+        <div className="skeleton w-12 h-12 rounded-full" />
+      </div>
     </div>
   )
 }
