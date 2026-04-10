@@ -30,7 +30,7 @@ export default function UserMenu() {
         <>
           <div className="fixed inset-0 z-10" onClick={() => setOpen(false)} />
           <div
-            className="absolute left-0 top-12 z-20 rounded-2xl shadow-2xl py-2 w-52"
+            className="absolute left-0 top-12 z-20 rounded-2xl shadow-2xl py-2 w-56"
             style={{
               background: 'var(--dropdown-bg)',
               border: '1px solid var(--dropdown-bord)',
@@ -41,23 +41,48 @@ export default function UserMenu() {
             {/* User info */}
             <div className="px-4 py-2.5" style={{ borderBottom: '1px solid var(--divider)' }}>
               <p className="text-sm font-semibold text-tx1">{user?.name}</p>
-              <p className="text-xs text-tx3">@{user?.username}</p>
+              <p className="text-xs text-tx3 font-light">@{user?.username}</p>
             </div>
 
-            {/* Theme toggle */}
+            {/* Theme toggle — pill */}
             <button
               onClick={toggle}
-              className="w-full text-right px-4 py-3 text-sm text-tx2 flex items-center justify-between transition hover:bg-[var(--in-bg)]"
+              className="w-full flex items-center gap-3 px-4 py-3 transition"
+              style={{ direction: 'ltr' }}
             >
-              <span className="text-lg">{isDark ? '☀️' : '🌙'}</span>
-              <span>{isDark ? 'מצב יום' : 'מצב לילה'}</span>
+              {/* Pill */}
+              <div
+                className="relative shrink-0 rounded-full"
+                style={{
+                  width: 52,
+                  height: 28,
+                  background: isDark ? '#1E0A4F' : 'var(--primary)',
+                  transition: 'background 0.3s',
+                  border: isDark ? '1px solid rgba(155,111,214,0.4)' : '1px solid rgba(255,255,255,0.2)',
+                }}
+              >
+                {/* Thumb */}
+                <div
+                  className="absolute top-[3px] w-[22px] h-[22px] bg-white rounded-full shadow-sm flex items-center justify-center text-[13px]"
+                  style={{
+                    left: isDark ? 3 : 27,
+                    transition: 'left 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                  }}
+                >
+                  {isDark ? '🌙' : '☀️'}
+                </div>
+              </div>
+              {/* Label */}
+              <span className="text-sm font-medium text-tx1" style={{ direction: 'rtl' }}>
+                {isDark ? 'מצב לילה' : 'מצב יום'}
+              </span>
             </button>
 
             <div style={{ borderTop: '1px solid var(--divider)' }} />
 
             <button
               onClick={handleLogout}
-              className="w-full text-right px-4 py-3 text-sm transition"
+              className="w-full text-right px-4 py-3 text-sm transition hover:bg-[var(--in-bg)]"
               style={{ color: 'var(--error-color)' }}
             >
               התנתקות

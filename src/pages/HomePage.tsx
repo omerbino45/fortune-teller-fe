@@ -21,10 +21,9 @@ export default function HomePage() {
     worriesApi.getAll().then(setWorries).finally(() => setLoading(false))
   }, [])
 
-  const sorted = [...worries].sort((a, b) => {
-    if (a.status !== b.status) return a.status === 'Active' ? -1 : 1
-    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-  })
+  const sorted = [...worries].sort((a, b) =>
+    new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  )
 
   const filtered = sorted.filter((w) => {
     if (filter !== 'All' && w.status !== filter) return false
