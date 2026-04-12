@@ -47,7 +47,6 @@ export default function UserMenu() {
             <button
               onClick={toggle}
               className="w-full flex items-center gap-3 px-4 py-3 transition"
-              style={{ direction: 'ltr' }}
             >
               {/* Pill */}
               <div
@@ -72,7 +71,7 @@ export default function UserMenu() {
                 </div>
               </div>
               {/* Label */}
-              <span className="text-sm font-medium text-tx1" style={{ direction: 'rtl' }}>
+              <span className="text-sm font-medium text-tx1">
                 {isDark ? 'מצב לילה' : 'מצב יום'}
               </span>
             </button>
