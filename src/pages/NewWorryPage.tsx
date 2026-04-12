@@ -4,7 +4,9 @@ import { motion } from 'framer-motion'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useQueryClient } from '@tanstack/react-query'
 import { worriesApi } from '../api'
+import type { Worry } from '../types'
 import SliderField from '../components/SliderField'
 import FactorsList from '../components/FactorsList'
 
@@ -17,6 +19,7 @@ type FormData = z.infer<typeof schema>
 
 export default function NewWorryPage() {
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
   const [preAnxiety, setPreAnxiety] = useState(50)
   const [assurance, setAssurance]   = useState(50)
   const [factors, setFactors]       = useState<string[]>([])
@@ -31,7 +34,7 @@ export default function NewWorryPage() {
   const onSubmit = async (data: FormData) => {
     try {
       setError('')
-      await worriesApi.create({
+      const newWorry = await worriesApi.create({
         title: data.title,
         prophecy: data.prophecy,
         preAnxietyLevel: preAnxiety,
@@ -39,6 +42,7 @@ export default function NewWorryPage() {
         description: data.description || undefined,
         factors,
       })
+      queryClient.setQueryData<Worry[]>(['worries'], (old = []) => [newWorry, ...old])
       navigate('/home')
     } catch {
       setError('שמירה נכשלה. אנא נסה שוב.')

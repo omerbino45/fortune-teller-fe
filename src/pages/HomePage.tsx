@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
+import { useQuery } from '@tanstack/react-query'
 import { worriesApi } from '../api'
 import { useAuthStore } from '../store/authStore'
 import type { Worry } from '../types'
@@ -12,15 +13,14 @@ import DateFilterBubble, { type DateRange } from '../components/DateFilterBubble
 export default function HomePage() {
   const navigate = useNavigate()
   const user = useAuthStore((s) => s.user)
-  const [worries, setWorries] = useState<Worry[]>([])
   const [search, setSearch] = useState('')
   const [filter, setFilter] = useState<'All' | 'Active' | 'Resolved'>('All')
   const [dateRange, setDateRange] = useState<DateRange>({ from: null, to: null })
-  const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    worriesApi.getAll().then(setWorries).finally(() => setLoading(false))
-  }, [])
+  const { data: worries = [], isLoading: loading } = useQuery<Worry[]>({
+    queryKey: ['worries'],
+    queryFn: worriesApi.getAll,
+  })
 
   const sorted = [...worries].sort((a, b) =>
     new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
