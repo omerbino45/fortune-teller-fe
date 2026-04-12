@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { worriesApi } from '../api'
 import type { Worry } from '../types'
 import AnxietyBar from '../components/AnxietyBar'
@@ -11,8 +12,7 @@ import ResolveSheet from '../components/ResolveSheet'
 export default function WorryDetailPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const [worry, setWorry]     = useState<Worry | null>(null)
-  const [loading, setLoading] = useState(true)
+  const queryClient = useQueryClient()
   const [showResolve, setShowResolve] = useState(false)
 
   const [editing, setEditing]                   = useState(false)
@@ -25,10 +25,15 @@ export default function WorryDetailPage() {
   const [saving, setSaving]     = useState(false)
   const [saveError, setSaveError] = useState('')
 
-  useEffect(() => {
-    if (!id) return
-    worriesApi.getById(id).then(setWorry).finally(() => setLoading(false))
-  }, [id])
+  const { data: worry, isLoading: loading } = useQuery<Worry>({
+    queryKey: ['worry', id],
+    queryFn: () => worriesApi.getById(id!),
+    enabled: !!id,
+    initialData: () => {
+      const list = queryClient.getQueryData<Worry[]>(['worries'])
+      return list?.find(w => w.id === id)
+    },
+  })
 
   const startEditing = () => {
     if (!worry) return
@@ -43,6 +48,13 @@ export default function WorryDetailPage() {
   }
 
   const cancelEditing = () => { setEditing(false); setSaveError('') }
+
+  const updateCaches = (updated: Worry) => {
+    queryClient.setQueryData(['worry', id], updated)
+    queryClient.setQueryData<Worry[]>(['worries'], (old = []) =>
+      old.map(w => w.id === id ? updated : w)
+    )
+  }
 
   const saveEdits = async () => {
     if (!worry) return
@@ -60,7 +72,7 @@ export default function WorryDetailPage() {
         patch.postAnxietyLevel = editPostAnxiety
       }
       const updated = await worriesApi.patch(worry.id, patch)
-      setWorry(updated); setEditing(false)
+      updateCaches(updated); setEditing(false)
     } catch {
       setSaveError('שמירה נכשלה. אנא נסה שוב.')
     } finally {
@@ -68,7 +80,7 @@ export default function WorryDetailPage() {
     }
   }
 
-  const onResolved = (updated: Worry) => { setWorry(updated); setShowResolve(false) }
+  const onResolved = (updated: Worry) => { updateCaches(updated); setShowResolve(false) }
 
   if (loading) return (
     <div className="app-shell flex items-center justify-center min-h-dvh">
