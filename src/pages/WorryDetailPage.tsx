@@ -8,12 +8,15 @@ import AnxietyBar from '../components/AnxietyBar'
 import SliderField from '../components/SliderField'
 import FactorsList from '../components/FactorsList'
 import ResolveSheet from '../components/ResolveSheet'
+import DeleteConfirmSheet from '../components/DeleteConfirmSheet'
 
 export default function WorryDetailPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const [showResolve, setShowResolve] = useState(false)
+  const [showDelete, setShowDelete] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
 
   const [editing, setEditing]                   = useState(false)
   const [editTitle, setEditTitle]               = useState('')
@@ -82,6 +85,12 @@ export default function WorryDetailPage() {
 
   const onResolved = (updated: Worry) => { updateCaches(updated); setShowResolve(false) }
 
+  const onDeleted = () => {
+    queryClient.setQueryData<Worry[]>(['worries'], (old = []) => old.filter(w => w.id !== id))
+    queryClient.removeQueries({ queryKey: ['worry', id] })
+    navigate(-1)
+  }
+
   if (loading) return (
     <div className="app-shell flex items-center justify-center min-h-dvh">
       <p className="text-tx3 text-sm font-light">טוען…</p>
@@ -106,18 +115,55 @@ export default function WorryDetailPage() {
               <path d="M19 12H5M12 19l-7-7 7-7"/>
             </svg>
           </button>
-          {!editing ? (
-            <button onClick={startEditing}
-              className="text-xs font-semibold px-4 py-1.5 rounded-full text-white"
-              style={{ background: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.3)' }}>
-              עריכה
-            </button>
-          ) : (
+          {editing ? (
             <button onClick={cancelEditing}
               className="text-xs font-semibold px-4 py-1.5 rounded-full text-white/70"
               style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.2)' }}>
               ביטול
             </button>
+          ) : (
+            <div className="relative">
+              <button
+                onClick={() => setMenuOpen((o) => !o)}
+                className="w-9 h-9 rounded-full flex items-center justify-center text-white transition"
+                style={{ background: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.3)' }}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                  <circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/>
+                </svg>
+              </button>
+
+              {menuOpen && (
+                <>
+                  <div className="fixed inset-0 z-10" onClick={() => setMenuOpen(false)} />
+                  <div
+                    className="absolute left-0 top-11 z-20 rounded-2xl shadow-2xl py-2 w-44"
+                    style={{
+                      background: 'var(--dropdown-bg)',
+                      border: '1px solid var(--dropdown-bord)',
+                      backdropFilter: 'blur(20px)',
+                      WebkitBackdropFilter: 'blur(20px)',
+                    }}
+                  >
+                    <button
+                      onClick={() => { setMenuOpen(false); startEditing() }}
+                      className="w-full text-right px-4 py-3 text-sm font-medium transition hover:bg-[var(--in-bg)]"
+                      style={{ color: 'var(--tx-1)' }}
+                    >
+                      עריכה
+                    </button>
+                    <div style={{ borderTop: '1px solid var(--divider)' }} />
+                    <button
+                      onClick={() => { setMenuOpen(false); setShowDelete(true) }}
+                      className="w-full text-right px-4 py-3 text-sm font-medium transition hover:bg-[var(--in-bg)]"
+                      style={{ color: 'var(--error-color)' }}
+                    >
+                      מחיקה
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
           )}
         </div>
 
@@ -256,6 +302,10 @@ export default function WorryDetailPage() {
 
       {showResolve && worry && (
         <ResolveSheet worryId={worry.id} onResolved={onResolved} onDismiss={() => setShowResolve(false)} />
+      )}
+
+      {showDelete && worry && (
+        <DeleteConfirmSheet worryId={worry.id} onDeleted={onDeleted} onDismiss={() => setShowDelete(false)} />
       )}
     </div>
   )
