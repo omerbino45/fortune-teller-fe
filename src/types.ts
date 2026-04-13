@@ -13,6 +13,7 @@ export interface Worry {
   postAnxietyLevel: number | null
   createdAt: string
   assuranceUpdatedAt: string
+  isArchived?: boolean
 }
 
 export interface AuthResponse {

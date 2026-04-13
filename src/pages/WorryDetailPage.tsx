@@ -17,6 +17,7 @@ export default function WorryDetailPage() {
   const [showResolve, setShowResolve] = useState(false)
   const [showDelete, setShowDelete] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [archiving, setArchiving] = useState(false)
 
   const [editing, setEditing]                   = useState(false)
   const [editTitle, setEditTitle]               = useState('')
@@ -85,6 +86,18 @@ export default function WorryDetailPage() {
 
   const onResolved = (updated: Worry) => { updateCaches(updated); setShowResolve(false) }
 
+  const toggleArchive = async () => {
+    if (!worry) return
+    try {
+      setArchiving(true)
+      const updated = await worriesApi.patch(worry.id, { isArchived: !worry.isArchived })
+      updateCaches(updated)
+      if (!worry.isArchived) navigate(-1)
+    } finally {
+      setArchiving(false)
+    }
+  }
+
   const onDeleted = () => {
     queryClient.setQueryData<Worry[]>(['worries'], (old = []) => old.filter(w => w.id !== id))
     queryClient.removeQueries({ queryKey: ['worry', id] })
@@ -151,6 +164,15 @@ export default function WorryDetailPage() {
                       style={{ color: 'var(--tx-1)' }}
                     >
                       עריכה
+                    </button>
+                    <div style={{ borderTop: '1px solid var(--divider)' }} />
+                    <button
+                      onClick={() => { setMenuOpen(false); toggleArchive() }}
+                      disabled={archiving}
+                      className="w-full text-right px-4 py-3 text-sm font-medium transition hover:bg-[var(--in-bg)]"
+                      style={{ color: 'var(--tx-2)' }}
+                    >
+                      {worry.isArchived ? 'הוצא מהארכיון' : 'העבר לארכיון'}
                     </button>
                     <div style={{ borderTop: '1px solid var(--divider)' }} />
                     <button

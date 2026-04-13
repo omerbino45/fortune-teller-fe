@@ -70,6 +70,7 @@ export const worriesApi = {
     assurance: number
     actualOutcome: string
     postAnxietyLevel: number
+    isArchived: boolean
   }>) => api.patch<Worry>(`/worries/${id}`, data).then((r) => r.data),
 
   delete: (id: string) =>
