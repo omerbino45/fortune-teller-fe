@@ -9,6 +9,7 @@ import BottomNav from '../components/BottomNav'
 import WorryCard from '../components/WorryCard'
 import UserMenu from '../components/UserMenu'
 import DateFilterBubble, { type DateRange } from '../components/DateFilterBubble'
+import ArchiveRow from '../components/ArchiveRow'
 
 export default function HomePage() {
   const navigate = useNavigate()
@@ -27,6 +28,7 @@ export default function HomePage() {
   )
 
   const filtered = sorted.filter((w) => {
+    if (w.isArchived) return false
     if (filter !== 'All' && w.status !== filter) return false
     if (dateRange.from && new Date(w.createdAt) < dateRange.from) return false
     if (dateRange.to) {
@@ -38,8 +40,9 @@ export default function HomePage() {
     return !q || w.title.toLowerCase().includes(q) || (w.description ?? '').toLowerCase().includes(q)
   })
 
-  const activeCount   = worries.filter(w => w.status === 'Active').length
-  const resolvedCount = worries.filter(w => w.status === 'Resolved').length
+  const activeCount   = worries.filter(w => w.status === 'Active' && !w.isArchived).length
+  const resolvedCount = worries.filter(w => w.status === 'Resolved' && !w.isArchived).length
+  const archivedCount = worries.filter(w => w.isArchived).length
 
   return (
     <div className="app-shell flex flex-col min-h-dvh">
@@ -86,6 +89,11 @@ export default function HomePage() {
           </button>
         ))}
         <DateFilterBubble value={dateRange} onChange={setDateRange} />
+      </div>
+
+      {/* Archive row */}
+      <div className="px-5 pt-3">
+        <ArchiveRow count={archivedCount} onClick={() => navigate('/archive')} />
       </div>
 
       {/* List */}

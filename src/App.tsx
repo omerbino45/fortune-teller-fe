@@ -10,6 +10,7 @@ import StatisticsPage from './pages/StatisticsPage'
 import VerifyEmailPage from './pages/VerifyEmailPage'
 import ForgotPasswordPage from './pages/ForgotPasswordPage'
 import ResetPasswordPage from './pages/ResetPasswordPage'
+import ArchivePage from './pages/ArchivePage'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const token = useAuthStore((s) => s.token)
@@ -30,6 +31,7 @@ export default function App() {
         <Route path="/worries/new" element={<ProtectedRoute><NewWorryPage /></ProtectedRoute>} />
         <Route path="/worries/:id" element={<ProtectedRoute><WorryDetailPage /></ProtectedRoute>} />
         <Route path="/statistics" element={<ProtectedRoute><StatisticsPage /></ProtectedRoute>} />
+        <Route path="/archive" element={<ProtectedRoute><ArchivePage /></ProtectedRoute>} />
       </Routes>
     </BrowserRouter>
   )
